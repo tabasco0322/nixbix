@@ -42,7 +42,7 @@
   defaultModules = [
     nixSettings
     inputs.agenix.nixosModules.age
-    inputs.disko.nixosModules.disko
+    # inputs.disko.nixosModules.disko
     inputs.home-manager.nixosModules.home-manager
     inputs.impermanence.nixosModules.impermanence
     inputs.nixpkgs.nixosModules.notDetected

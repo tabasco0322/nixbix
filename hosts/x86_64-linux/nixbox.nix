@@ -11,9 +11,9 @@
     ../../profiles/admin-user/home-manager.nix
     ../../profiles/admin-user/user.nix
     ../../profiles/disk/btrfs-on-luks.nix
-    #../../profiles/desktop.nix
+    ../../profiles/desktop.nix
     #../../profiles/greetd.nix
-    #../../profiles/home-manager.nix
+    ../../profiles/home-manager.nix
     #../../profiles/restic-backup.nix
     ../../profiles/state.nix
     #../../profiles/tailscale.nix
@@ -39,15 +39,15 @@
   #programs.steam.enable = true;
   #services.flatpak.enable = true;
 
-#  home-manager = {
-#    users.${adminUser.name} = {
-#      imports = [../../users/profiles/workstation.nix];
+ home-manager = {
+   users.${adminUser.name} = {
+     imports = [../../users/profiles/workstation.nix];
 #      programs.git.extraConfig.user.signingKey = "key::sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIH8FItRsdPvpg8mTCF7gsKQJ4ABaOCE8a6PzamumRWe3AAAABHNzaDo=";
 #      programs.jujutsu.settings.signing = {
 #        sign-all = true;
 #        backend = "ssh";
 #        key = config.age.secrets.id_ed25519.path;
 #      };
-#    };
-#  };
+   };
+ };
 }
