@@ -69,7 +69,6 @@
           inherit system;
           specialArgs = {
             hostName = name;
-            tailnet = "tailef5cf";
             inherit adminUser;
             hostConfigurations =
               mapAttrs' (name: conf: {
