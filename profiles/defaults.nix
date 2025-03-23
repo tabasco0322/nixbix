@@ -76,8 +76,6 @@ in {
   home-manager.useUserPackages = true;
   home-manager.useGlobalPkgs = true;
 
-  networking.nameservers = ["1.0.0.1" "1.1.1.1"];
-
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
