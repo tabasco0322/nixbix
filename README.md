@@ -40,10 +40,10 @@ Brown magic
 ### Wowup
 
 1) Visit https://wowup.io
-    1) Download latest appimage
+    * Download latest appimage
 1) ```nix shell nixpkgs#appimage-run -c appimage-run WowUp-CF-2.$version.AppImage```
-    1) ```Ctrl+H``` To show hidden files
-    1) ```/home/nemko/.var/app/com.usebottles.bottles/data/bottles/bottles/Games/drive_c/Program Files (x86)/World of Warcraft/_classic_era_```
+    * ```Ctrl+H``` To show hidden files
+    * ```/home/$USER/.var/app/com.usebottles.bottles/data/bottles/bottles/Games/drive_c/Program Files (x86)/World of Warcraft/_classic_era_```
 
 ### Nix misc
 
@@ -52,6 +52,14 @@ Brown magic
 
 ### Discord things
 
-Since NixOS patches the discord binary, Krisp yeetus deletus itself and won't play. Flatpak is used instead.
+Since NixOS patches the discord binary, [Krisp yeetus deletus itself](https://nixos.wiki/wiki/Discord#Krisp_noise_suppression). Flatpak is used instead.
 
 * ```flatpak install discord```
+
+
+### Build on Mac
+
+https://github.com/DeterminateSystems/nix-installer
+
+* ```nix build .#nixosConfigurations.nixbox.config.system.build.toplevel```
+    * *Remember that building x86 on arm64 is really hard...*
