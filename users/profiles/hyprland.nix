@@ -293,6 +293,7 @@ in {
     input = {
       kb_layout = "us";
       #kb_variant = "colemak";
+      kb_options = "compose:ralt";
 
       follow_mouse = 1;
 
