@@ -133,8 +133,7 @@ in {
     workspace=3,monitor:DP-3
     workspace=5,monitor:DP-3
 
-    workspace=6,monitor:DP-1,default:true
-    workspace=7,monitor:DP-1
+    workspace=7,monitor:DP-1,default:true,layoutopt:orientation:left
 
     workspace=2,monitor:DP-2,default:true
     workspace=4,monitor:DP-2
