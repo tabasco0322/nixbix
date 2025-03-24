@@ -47,8 +47,16 @@ Brown magic
 
 ### Nix misc
 
-* ```nixos-rebuild build --flake .#$hostname```
-* ``` nixos-rebuild switch --flake .#nixbox --use-remote-sudo```
+#### Test build
+* ```nixos-rebuild build --flake .#$hostname ```
+
+#### Switch to build
+* ```nixos-rebuild switch --flake .#$hostname --use-remote-sudo```
+
+#### Update system
+
+* ```cd $gitrepo```
+* ```nix flake update```
 
 ### Discord things
 
