@@ -143,7 +143,7 @@ in {
     windowrulev2=workspace 4,class:(org.telegram.desktop)
     windowrulev2=workspace 4,class:(Signal)
 
-    windowrulev2=workspace 6,class:(discord)
+    windowrulev2=workspace 7,class:(discord)
 
     windowrulev2=workspace 4,class:(Spotify)
   '';
