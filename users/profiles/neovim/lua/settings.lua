@@ -35,7 +35,6 @@ opt.listchars = {
   precedes = "←",
   extends = "→",
   nbsp = "+",
-  eol = "↲",
 }
 
 opt.fillchars = { eob = " ", diff = "" }
