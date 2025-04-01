@@ -43,6 +43,7 @@ in {
       require "plugins"
       require "keymaps"
       require "commands"
+      require "colemak"
     '';
     plugins = with pkgs.vimPlugins; [
       CopilotChat-nvim
