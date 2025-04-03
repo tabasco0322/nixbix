@@ -1,6 +1,14 @@
-## Initial setup
+# bisnix
 
-Brown magic
+## ToC
+
+* [Initial Setup](#initial-setup)
+* [Nix misc](#nix-misc)
+    + [Update system](#update-system)
+* [Wow things](#wow-things)
+* [Discord things](#discord-things)
+
+## Initial setup
 
 ### On the host
 
@@ -19,7 +27,27 @@ Brown magic
 1) ```reboot```
     * *Might need to change boot disk*
 
-### Wow things
+## Nix misc
+
+### Update system
+
+* ```cd $gitrepo```
+* ```nix flake update```
+
+### Test build
+* ```nixos-rebuild build --flake .#$hostname ```
+
+### Switch to build
+* ```nixos-rebuild switch --flake .#$hostname --use-remote-sudo```
+
+### Build on Mac
+
+https://github.com/DeterminateSystems/nix-installer
+
+* ```nix build .#nixosConfigurations.nixbox.config.system.build.toplevel```
+    * *Remember that building x86 on arm64 is really hard...*
+
+## Wow things
 
 1) ```flatpak --user remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo```
     * *Might need to reboot so things gets added to $PATH*
@@ -45,26 +73,8 @@ Brown magic
     * ```Ctrl+H``` To show hidden files
     * ```/home/$USER/.var/app/com.usebottles.bottles/data/bottles/bottles/Games/drive_c/Program Files (x86)/World of Warcraft/_classic_era_```
 
-### Nix misc
-
-#### Test build
-* ```nixos-rebuild build --flake .#$hostname ```
-
-#### Switch to build
-* ```nixos-rebuild switch --flake .#$hostname --use-remote-sudo```
-
-#### Update system
-
-* ```cd $gitrepo```
-* ```nix flake update```
-
-### Discord things
+## Discord things
 
 Since NixOS patches the discord binary, [Krisp yeetus deletus itself](https://nixos.wiki/wiki/Discord#Krisp_noise_suppression). Vesktop is used instead.
 
-### Build on Mac
 
-https://github.com/DeterminateSystems/nix-installer
-
-* ```nix build .#nixosConfigurations.nixbox.config.system.build.toplevel```
-    * *Remember that building x86 on arm64 is really hard...*
