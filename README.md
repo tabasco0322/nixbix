@@ -60,10 +60,7 @@ Brown magic
 
 ### Discord things
 
-Since NixOS patches the discord binary, [Krisp yeetus deletus itself](https://nixos.wiki/wiki/Discord#Krisp_noise_suppression). Flatpak is used instead.
-
-* ```flatpak install discord```
-
+Since NixOS patches the discord binary, [Krisp yeetus deletus itself](https://nixos.wiki/wiki/Discord#Krisp_noise_suppression). Vesktop is used instead.
 
 ### Build on Mac
 
