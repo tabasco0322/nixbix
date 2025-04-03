@@ -41,6 +41,7 @@
         ".config/bruno"
         ".config/chromium"
         ".config/discord"
+        ".config/vesktop"
         ".config/easyeffects"
         ".config/gcloud"
         ".config/gh"
