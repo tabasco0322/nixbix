@@ -24,6 +24,7 @@ in {
     wl-clipboard
     wl-clipboard-x11
     xdg-utils
+    vesktop
   ];
 
   xdg.configFile."wpaperd/wallpaper.toml".source = pkgs.writeText "wallpaper.toml" ''
