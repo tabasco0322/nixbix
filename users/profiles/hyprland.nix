@@ -6,10 +6,9 @@
 }: let
   screenshot = pkgs.writeShellApplication {
     name = "screenshot";
-    runtimeInputs = [pkgs.slurp pkgs.grim];
+    runtimeInputs = [pkgs.hyprshot];
     text = ''
-      mkdir -p ~/Pictures/screenshots
-      slurp | grim -g - ~/Pictures/screenshots/"$(date +'%Y-%m-%dT%H%M%S.png')"
+      hyprshot -m region --clipboard-only
     '';
   };
 
