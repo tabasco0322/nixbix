@@ -128,19 +128,20 @@ in {
     bind=,return,submap,reset
     submap=reset
 
-    workspace=1,monitor:DP-3,default:true
-    workspace=3,monitor:DP-3
-    workspace=5,monitor:DP-3
+    workspace=1,monitor:DP-2,default:true
+    workspace=3,monitor:DP-2
+    workspace=5,monitor:DP-2
 
-    workspace=7,monitor:DP-1,default:true,layoutopt:orientation:left
+    workspace=7,monitor:DP-3,default:true,layoutopt:orientation:bottom
+    workspace=9,monitor:DP-3,layoutopt:orientation:bottom
 
-    workspace=2,monitor:DP-2,default:true
-    workspace=4,monitor:DP-2
+    workspace=2,monitor:DP-1,default:true,layoutopt:orientation:bottom
+    workspace=4,monitor:DP-1,layoutopt:orientation:top
 
     windowrule=workspace 2,class:(firefox)
 
     windowrulev2=workspace 4,class:(org.telegram.desktop)
-    windowrulev2=workspace 4,class:(Signal)
+    windowrulev2=workspace 4,class:(signal-desktop)
 
     windowrulev2=workspace 7,class:(vesktop)
 
@@ -149,9 +150,9 @@ in {
 
   wayland.windowManager.hyprland.settings = {
     monitor = [
-      "DP-1, 2560x1440@144.000, 5120x0, 1"
-      "DP-2, 2560x1440@144.000, 0x0, 1"
-      "DP-3, 2560x1440@144.000, 2560x0, 1"
+      "DP-1, 2560x1440@144.000, 0x0, 1, transform, 1"
+      "DP-2, 3840x2160@240.000, 1440x0, 1"
+      "DP-3, 2560x1440@144.000, 5280x0, 1, transform, 3"
     ];
     "$mod" = "SUPER";
     bind = [
