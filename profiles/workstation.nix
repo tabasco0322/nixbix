@@ -4,7 +4,8 @@
   pkgs,
   inputs,
   ...
-}: {
+}:
+{
   imports = [
     ./defaults.nix
     inputs.nixos-hardware.nixosModules.common-pc-ssd
@@ -19,27 +20,30 @@
   hardware.graphics.enable = true;
   hardware.graphics.enable32Bit = true;
 
-  hardware.graphics.extraPackages = [];
+  hardware.graphics.extraPackages = [ ];
 
-  hardware.graphics.extraPackages32 = [];
+  hardware.graphics.extraPackages32 = [ ];
 
   security.rtkit.enable = true;
   hardware.bluetooth.enable = true;
   networking.wireless.iwd.enable = true;
 
-  environment.pathsToLink = ["/etc/gconf"];
+  environment.pathsToLink = [ "/etc/gconf" ];
 
   security.pam.services.swaylock = {
     text = ''
       auth include login
     '';
   };
-  security.pam.services.hyprlock = {};
+  security.pam.services.hyprlock = { };
+
+  security.pam.services.gdm.enableGnomeKeyring = true; # load gnome-keyring at startup
+  programs.seahorse.enable = true; # enable the graphical frontend for managing
 
   powerManagement.enable = true;
   powerManagement.powertop.enable = true;
 
-  environment.persistence."/keep".directories = ["/var/cache/powertop"];
+  environment.persistence."/keep".directories = [ "/var/cache/powertop" ];
 
   virtualisation.docker.enable = false;
   virtualisation.podman.enable = true;
@@ -59,8 +63,12 @@
 
   services.fwupd.enable = true;
 
-  services.dbus.packages = with pkgs; [gcr dconf sushi];
-  services.udev.packages = with pkgs; [gnome-settings-daemon];
+  services.dbus.packages = with pkgs; [
+    gcr
+    dconf
+    sushi
+  ];
+  services.udev.packages = with pkgs; [ gnome-settings-daemon ];
 
   services.pipewire = {
     enable = true;
@@ -85,19 +93,24 @@
   xdg.portal = {
     enable = true;
     wlr.enable = true;
-    extraPortals = [pkgs.xdg-desktop-portal-gtk];
-    config = let
-      wlrConf = {
-        default = ["wlr" "gtk"];
-        "org.freedesktop.impl.portal.Secret" = ["gnome-keyring"];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config =
+      let
+        wlrConf = {
+          default = [
+            "wlr"
+            "gtk"
+          ];
+          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+        };
+      in
+      {
+        common = {
+          default = [ "gtk" ];
+          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+        };
+        sway = wlrConf;
       };
-    in {
-      common = {
-        default = ["gtk"];
-        "org.freedesktop.impl.portal.Secret" = ["gnome-keyring"];
-      };
-      sway = wlrConf;
-    };
   };
 
   fonts.packages = with pkgs; [

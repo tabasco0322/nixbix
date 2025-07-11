@@ -1,4 +1,5 @@
-{adminUser, ...}: {
+{ adminUser, ... }:
+{
   environment.persistence."/keep" = {
     hideMounts = true;
     directories = [
@@ -52,6 +53,7 @@
         ".config/pipewire"
         ".config/pulse"
         ".config/spotify"
+        ".config/VSCodium"
         ".config/warcraftlogs"
         ".factorio"
         ".gnupg"
@@ -63,6 +65,7 @@
         ".local/share/fish"
         ".local/share/flatpak"
         ".local/share/lutris"
+        ".local/share/keyrings"
         ".local/share/nix"
         ".local/share/vulkan"
         ".local/share/zoxide"
@@ -81,7 +84,7 @@
         "Pictures"
         "code"
         "git"
-	".ssh"
+        ".ssh"
       ];
       files = [
         ".cockroachsql_history"

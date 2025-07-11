@@ -2,15 +2,19 @@
   pkgs,
   config,
   ...
-}: let
+}:
+let
   inherit (config) gtk;
-in {
+in
+{
   imports =
-    [./default.nix]
+    [ ./default.nix ]
     ++ [
       ./hyprland.nix
       ./rofi.nix
       ./waybar.nix
+      ./vscodium.nix
+      ./gnome-keyring.nix
     ];
 
   home.packages = with pkgs; [
@@ -19,12 +23,14 @@ in {
     scrot
     signal-desktop
     spotify
-    tdesktop ## Telegram
+    tdesktop # # Telegram
     vulkan-loader
     wl-clipboard
     wl-clipboard-x11
     xdg-utils
     vesktop
+    nixfmt-rfc-style
+    libsecret
   ];
 
   xdg.configFile."wpaperd/wallpaper.toml".source = pkgs.writeText "wallpaper.toml" ''
@@ -66,7 +72,8 @@ in {
     };
   };
 
-  home.file."Pictures/wallpapers/default-background.jpg".source = "${pkgs.adapta-backgrounds}/share/backgrounds/adapta/tri-fadeno.jpg";
+  home.file."Pictures/wallpapers/default-background.jpg".source =
+    "${pkgs.adapta-backgrounds}/share/backgrounds/adapta/tri-fadeno.jpg";
 
   base16-theme.enable = true;
 
