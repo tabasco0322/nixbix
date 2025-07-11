@@ -1,4 +1,4 @@
-# GNOME Keyring for storing/encrypting sycrets
+# GNOME Keyring for storing/encrypting secrets
 # apps like vscode stores encrypted data using it
 
 {
