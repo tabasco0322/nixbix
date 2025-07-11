@@ -5,17 +5,17 @@
     package = pkgs.vscodium;
     profiles.default = {
       extensions = with pkgs.vscode-extensions; [
-        jnoortheen.nix-ide
-        redhat.vscode-yaml
-        vscodevim.vim
-        github.github-vscode-theme
+        eamodio.gitlens
+        fill-labs.dependi
         github.copilot
         github.copilot-chat
-        vadimcn.vscode-lldb
-        fill-labs.dependi
-        usernamehw.errorlens
-        eamodio.gitlens
+        github.github-vscode-theme
+        jnoortheen.nix-ide
+        redhat.vscode-yaml
         rust-lang.rust-analyzer
+        usernamehw.errorlens
+        vadimcn.vscode-lldb
+        vscodevim.vim
       ];
       userSettings = {
         "editor.formatOnSave" = true;
