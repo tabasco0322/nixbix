@@ -47,6 +47,8 @@
 
   programs.ssh.startAgent = true;
 
+  programs.gamemode.enable = true;
+
   services.pcscd.enable = true;
 
   programs.dconf.enable = true;
