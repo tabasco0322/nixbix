@@ -76,6 +76,7 @@
         ".steam"
         ".terraform.d"
         ".var"
+        ".vscode-oss"
         ".wine"
         "Documents"
         "Downloads"
