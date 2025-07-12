@@ -18,15 +18,16 @@
         vscodevim.vim
       ];
       userSettings = {
-        "editor.formatOnSave" = true;
         "diffEditor.hideUnchangedRegions.enabled" = true;
+        "editor.formatOnSave" = true;
+        "editor.lineNumbers" = "relative";
         "git.autofetch" = true;
         "git.confirmSync" = false;
+        "lldb.suppressUpdateNotifications" = true;
         "redhat.telemetry.enabled" = false;
         "workbench.colorTheme" = "GitHub Dark Default";
         "workbench.sideBar.location" = "right";
-        "lldb.suppressUpdateNotifications" = true;
-        "editor.lineNumbers" = "relative";
+        "workbench.startupEditor": "none"
       };
     };
   };
