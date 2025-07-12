@@ -3,10 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   screenshot = pkgs.writeShellApplication {
     name = "screenshot";
-    runtimeInputs = [pkgs.hyprshot];
+    runtimeInputs = [ pkgs.hyprshot ];
     text = ''
       hyprshot -m region --clipboard-only
     '';
@@ -14,7 +15,8 @@
 
   xcursor_theme = config.gtk.cursorTheme.name;
   terminal-bin = "${pkgs.alacritty}/bin/alacritty";
-in {
+in
+{
   home.sessionVariables = {
     GDK_BACKEND = "wayland";
     CLUTTER_BACKEND = "wayland";
@@ -146,29 +148,30 @@ in {
       "DP-5, 2560x1440@144.000, 5280x0, 1, transform, 3"
     ];
     "$mod" = "SUPER";
-    bind = [
-      "$mod, Return, exec, ${terminal-bin}"
-      "$mod SHIFT, q, killactive"
-      "$mod, d, exec, ${pkgs.rofi-wayland}/bin/rofi -show drun"
-      "$mod SHIFT, s, exec, ${screenshot}/bin/screenshot"
-      "$mod, i, exec, hyprlock"
-      "$mod SHIFT, e, exec, ${pkgs.neovide}/bin/neovide"
-      "$mod, left, movefocus, l"
-      "$mod, right, movefocus, r"
-      "$mod, up, movefocus, u"
-      "$mod, down, movefocus, d"
-      "$mod SHIFT, left, movewindoworgroup, l"
-      "$mod SHIFT, right, movewindoworgroup, r"
-      "$mod SHIFT, up, movewindoworgroup, u"
-      "$mod SHIFT, down, movewindoworgroup, d"
-      "$mod, f, fullscreen"
-      "$mod, g, togglegroup"
-      "$mod SHIFT, g, lockactivegroup, toggle"
-      "$mod, Tab, changegroupactive, f"
-      "$mod SHIFT, Tab, changegroupactive, b"
-      "$mod, space, layoutmsg, swapwithmaster"
-      "$mod, m, movecurrentworkspacetomonitor, +1"
-      "$mod SHIFT, space, togglefloating"
+    bind =
+      [
+        "$mod, Return, exec, ${terminal-bin}"
+        "$mod SHIFT, q, killactive"
+        "$mod, d, exec, ${pkgs.rofi-wayland}/bin/rofi -show drun"
+        "$mod SHIFT, s, exec, ${screenshot}/bin/screenshot"
+        "$mod, i, exec, hyprlock"
+        "$mod SHIFT, e, exec, ${pkgs.neovide}/bin/neovide"
+        "$mod, left, movefocus, l"
+        "$mod, right, movefocus, r"
+        "$mod, up, movefocus, u"
+        "$mod, down, movefocus, d"
+        "$mod SHIFT, left, movewindoworgroup, l"
+        "$mod SHIFT, right, movewindoworgroup, r"
+        "$mod SHIFT, up, movewindoworgroup, u"
+        "$mod SHIFT, down, movewindoworgroup, d"
+        "$mod, f, fullscreen"
+        "$mod, g, togglegroup"
+        "$mod SHIFT, g, lockactivegroup, toggle"
+        "$mod, Tab, changegroupactive, f"
+        "$mod SHIFT, Tab, changegroupactive, b"
+        "$mod, space, layoutmsg, swapwithmaster"
+        "$mod, m, movecurrentworkspacetomonitor, +1"
+        "$mod SHIFT, space, togglefloating"
       ]
       ++ (map (num: "$mod, ${num}, workspace, ${num}") (
         builtins.genList (x: builtins.toString (x + 1)) 9
@@ -179,7 +182,7 @@ in {
       ++ [
         "$mod, 0, workspace, 10"
         "$mod SHIFT, 0, movetoworkspacesilent, 10"
-    ];
+      ];
 
     binde = [
       ", XF86AudioRaiseVolume, exec, ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%"
@@ -268,7 +271,10 @@ in {
       mfact = 0.7;
     };
 
-    layerrule = ["blur,waybar" "ignorealpha,waybar"];
+    layerrule = [
+      "blur,waybar"
+      "ignorealpha,waybar"
+    ];
 
     input = {
       kb_layout = "us";
