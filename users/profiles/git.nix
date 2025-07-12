@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   programs.git = {
     enable = true;
     delta = {
@@ -18,11 +19,12 @@
         editor = "nvim";
         whitespace = "cr-at-eol";
       };
-#      gpg.format = "ssh";
-#      commit.gpgSign = true;
+      #      gpg.format = "ssh";
+      #      commit.gpgSign = true;
       tag.forceSignAnnotated = true;
       init.defaultBranch = "main";
       pull.rebase = true;
+      push.autoSetupRemote = true;
       push.default = "simple";
       push.followTags = "true";
       color = {
