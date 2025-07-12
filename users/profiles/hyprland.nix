@@ -294,6 +294,11 @@ in {
       };
     };
 
+    ecosystem = {
+      no_donation_nag = true;
+      no_update_news = true;
+    };
+
     windowrulev2 = [
       "dimaround,class:gitui"
       "float,class:gitui"
