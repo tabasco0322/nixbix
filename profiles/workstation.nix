@@ -46,8 +46,26 @@
   environment.persistence."/keep".directories = [ "/var/cache/powertop" ];
 
   virtualisation.docker.enable = false;
-  virtualisation.podman.enable = true;
-  virtualisation.podman.dockerCompat = true;
+  virtualisation.podman.enable = false;
+  virtualisation.podman.dockerCompat = false;
+
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu = {
+      package = pkgs.qemu_kvm;
+      runAsRoot = true;
+      swtpm.enable = true;
+      ovmf = {
+        enable = true;
+        packages = [
+          (pkgs.OVMF.override {
+            secureBoot = true;
+            tpmSupport = true;
+          }).fd
+        ];
+      };
+    };
+  };
 
   programs.ssh.startAgent = true;
 

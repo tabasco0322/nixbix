@@ -1,7 +1,8 @@
 {
   pkgs,
   ...
-}:{
+}:
+{
   imports = [
     ./alacritty.nix
     ./bat.nix
@@ -24,6 +25,8 @@
     lm_sensors
     nix-index
     p7zip
+    virt-manager
+    virt-viewer
   ];
 
   xdg.enable = true;
@@ -52,7 +55,7 @@
       OnCalendar = "*-*-* 4:00:00";
       Unit = "nix-index.service";
     };
-    Install.WantedBy = ["timers.target"];
+    Install.WantedBy = [ "timers.target" ];
   };
 
   home.stateVersion = "21.05";
