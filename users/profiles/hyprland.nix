@@ -137,15 +137,6 @@ in {
 
     workspace=2,monitor:DP-4,default:true,layoutopt:orientation:bottom
     workspace=4,monitor:DP-4,layoutopt:orientation:top
-
-    windowrule=workspace 2,class:(firefox)
-
-    windowrulev2=workspace 4,class:(org.telegram.desktop)
-    windowrulev2=workspace 4,class:(signal-desktop)
-
-    windowrulev2=workspace 7,class:(vesktop)
-
-    windowrulev2=workspace 4,class:(Spotify)
   '';
 
   wayland.windowManager.hyprland.settings = {
@@ -325,6 +316,11 @@ in {
       "${pkgs.wpaperd}/bin/wpaperd"
       "${pkgs.hyprland}/bin/hyprctl setcursor ${xcursor_theme} 24"
       "${pkgs.polkit_gnome.out}/libexec/polkit-gnome-authentication-agent-1"
+      "[workspace 2 silent] ${pkgs.firefox}/bin/firefox"
+      "[workspace 4 silent] ${pkgs.signal-desktop}/bin/signal-desktop"
+      "[workspace 4 silent] ${pkgs.tdesktop}/bin/Telegram"
+      "[workspace 4 silent] ${pkgs.spotify}/bin/spotify"
+      "[workspace 7 silent] ${pkgs.vesktop}/bin/vesktop"
     ];
   };
 }
