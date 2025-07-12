@@ -3,10 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   screenshot = pkgs.writeShellApplication {
     name = "screenshot";
-    runtimeInputs = [pkgs.hyprshot];
+    runtimeInputs = [ pkgs.hyprshot ];
     text = ''
       hyprshot -m region --clipboard-only
     '';
@@ -14,7 +15,8 @@
 
   xcursor_theme = config.gtk.cursorTheme.name;
   terminal-bin = "${pkgs.alacritty}/bin/alacritty";
-in {
+in
+{
   home.sessionVariables = {
     GDK_BACKEND = "wayland";
     CLUTTER_BACKEND = "wayland";
@@ -137,15 +139,6 @@ in {
 
     workspace=2,monitor:DP-4,default:true,layoutopt:orientation:bottom
     workspace=4,monitor:DP-4,layoutopt:orientation:top
-
-    windowrule=workspace 2,class:(firefox)
-
-    windowrulev2=workspace 4,class:(org.telegram.desktop)
-    windowrulev2=workspace 4,class:(signal-desktop)
-
-    windowrulev2=workspace 7,class:(vesktop)
-
-    windowrulev2=workspace 4,class:(Spotify)
   '';
 
   wayland.windowManager.hyprland.settings = {
@@ -155,50 +148,41 @@ in {
       "DP-5, 2560x1440@144.000, 5280x0, 1, transform, 3"
     ];
     "$mod" = "SUPER";
-    bind = [
-      "$mod, Return, exec, ${terminal-bin}"
-      "$mod SHIFT, q, killactive"
-      "$mod, d, exec, ${pkgs.rofi-wayland}/bin/rofi -show drun"
-      "$mod SHIFT, s, exec, ${screenshot}/bin/screenshot"
-      "$mod, i, exec, hyprlock"
-      "$mod SHIFT, e, exec, ${pkgs.neovide}/bin/neovide"
-      "$mod, left, movefocus, l"
-      "$mod, right, movefocus, r"
-      "$mod, up, movefocus, u"
-      "$mod, down, movefocus, d"
-      "$mod, 1, workspace, 1"
-      "$mod, 2, workspace, 2"
-      "$mod, 3, workspace, 3"
-      "$mod, 4, workspace, 4"
-      "$mod, 5, workspace, 5"
-      "$mod, 6, workspace, 6"
-      "$mod, 7, workspace, 7"
-      "$mod, 8, workspace, 8"
-      "$mod, 9, workspace, 9"
-      "$mod SHIFT, 1, movetoworkspace, 1"
-      "$mod SHIFT, 2, movetoworkspace, 2"
-      "$mod SHIFT, 3, movetoworkspace, 3"
-      "$mod SHIFT, 4, movetoworkspace, 4"
-      "$mod SHIFT, 5, movetoworkspace, 5"
-      "$mod SHIFT, 6, movetoworkspace, 6"
-      "$mod SHIFT, 7, movetoworkspace, 7"
-      "$mod SHIFT, 8, movetoworkspace, 8"
-      "$mod SHIFT, 9, movetoworkspace, 9"
-      "$mod, 0, workspace, 10"
-      "$mod SHIFT, 0, movetoworkspace, 10"
-      "$mod SHIFT, left, movewindoworgroup, l"
-      "$mod SHIFT, right, movewindoworgroup, r"
-      "$mod SHIFT, up, movewindoworgroup, u"
-      "$mod SHIFT, down, movewindoworgroup, d"
-      "$mod, f, fullscreen"
-      "$mod, g, togglegroup"
-      "$mod SHIFT, g, lockactivegroup, toggle"
-      "$mod, Tab, changegroupactive, f"
-      "$mod SHIFT, Tab, changegroupactive, b"
-      "$mod, space, layoutmsg, swapwithmaster"
-      "$mod, m, movecurrentworkspacetomonitor, +1"
-      "$mod SHIFT, space, togglefloating"
-    ];
+    bind =
+      [
+        "$mod, Return, exec, ${terminal-bin}"
+        "$mod SHIFT, q, killactive"
+        "$mod, d, exec, ${pkgs.rofi-wayland}/bin/rofi -show drun"
+        "$mod SHIFT, s, exec, ${screenshot}/bin/screenshot"
+        "$mod, i, exec, hyprlock"
+        "$mod SHIFT, e, exec, ${pkgs.neovide}/bin/neovide"
+        "$mod, left, movefocus, l"
+        "$mod, right, movefocus, r"
+        "$mod, up, movefocus, u"
+        "$mod, down, movefocus, d"
+        "$mod SHIFT, left, movewindoworgroup, l"
+        "$mod SHIFT, right, movewindoworgroup, r"
+        "$mod SHIFT, up, movewindoworgroup, u"
+        "$mod SHIFT, down, movewindoworgroup, d"
+        "$mod, f, fullscreen"
+        "$mod, g, togglegroup"
+        "$mod SHIFT, g, lockactivegroup, toggle"
+        "$mod, Tab, changegroupactive, f"
+        "$mod SHIFT, Tab, changegroupactive, b"
+        "$mod, space, layoutmsg, swapwithmaster"
+        "$mod, m, movecurrentworkspacetomonitor, +1"
+        "$mod SHIFT, space, togglefloating"
+      ]
+      ++ (map (num: "$mod, ${num}, workspace, ${num}") (
+        builtins.genList (x: builtins.toString (x + 1)) 9
+      ))
+      ++ (map (num: "$mod SHIFT, ${num}, movetoworkspacesilent, ${num}") (
+        builtins.genList (x: builtins.toString (x + 1)) 9
+      ))
+      ++ [
+        "$mod, 0, workspace, 10"
+        "$mod SHIFT, 0, movetoworkspacesilent, 10"
+      ];
 
     binde = [
       ", XF86AudioRaiseVolume, exec, ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%"
@@ -287,7 +271,10 @@ in {
       mfact = 0.7;
     };
 
-    layerrule = ["blur,waybar" "ignorealpha,waybar"];
+    layerrule = [
+      "blur,waybar"
+      "ignorealpha,waybar"
+    ];
 
     input = {
       kb_layout = "us";
@@ -301,6 +288,11 @@ in {
         disable_while_typing = true;
         tap-to-click = true;
       };
+    };
+
+    ecosystem = {
+      no_donation_nag = true;
+      no_update_news = true;
     };
 
     windowrulev2 = [
@@ -325,6 +317,11 @@ in {
       "${pkgs.wpaperd}/bin/wpaperd"
       "${pkgs.hyprland}/bin/hyprctl setcursor ${xcursor_theme} 24"
       "${pkgs.polkit_gnome.out}/libexec/polkit-gnome-authentication-agent-1"
+      "[workspace 2 silent] ${pkgs.firefox}/bin/firefox"
+      "[workspace 4 silent] ${pkgs.signal-desktop}/bin/signal-desktop"
+      "[workspace 4 silent] ${pkgs.tdesktop}/bin/Telegram"
+      "[workspace 4 silent] ${pkgs.spotify}/bin/spotify"
+      "[workspace 7 silent] ${pkgs.vesktop}/bin/vesktop"
     ];
   };
 }
