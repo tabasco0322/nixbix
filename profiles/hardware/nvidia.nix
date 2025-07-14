@@ -1,13 +1,13 @@
 {
   config,
   ...
-}: 
+}:
 {
   hardware.graphics = {
     enable = true;
   };
 
-  services.xserver.videoDrivers = ["nvidia"];
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware.nvidia = {
     open = true;
@@ -15,6 +15,7 @@
     powerManagement.enable = false;
     powerManagement.finegrained = false;
     nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
 
   #boot.initrd.kernelModules = [ "nvidia" ];
