@@ -46,7 +46,6 @@
     hyprland.url = "github:hyprwm/Hyprland";
     impermanence.url = "github:nix-community/impermanence";
     mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
-    nix2container.inputs.flake-utils.follows = "flake-utils";
     nix2container.inputs.nixpkgs.follows = "nixpkgs";
     nix2container.url = "github:nlewo/nix2container";
     nixos-generators.inputs.nixpkgs.follows = "nixpkgs";
