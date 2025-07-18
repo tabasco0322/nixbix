@@ -38,7 +38,7 @@
 * ```nixos-rebuild build --flake .#$hostname ```
 
 ### Switch to build
-* ```nixos-rebuild switch --flake .#$hostname --use-remote-sudo```
+* ```nixos-rebuild switch --flake .#$hostname --sudo```
 
 ### Build on Mac
 
@@ -46,6 +46,13 @@ https://github.com/DeterminateSystems/nix-installer
 
 * ```nix build .#nixosConfigurations.nixbox.config.system.build.toplevel```
     * *Remember that building x86 on arm64 is really hard...*
+
+### Create iso
+
+```shell
+cd $repo
+nix-build '<nixpkgs/nixos>' -A config.system.build.isoImage -I nixos-config=hosts/x86_64-linux/installer.nix
+```
 
 ## Wow things
 
