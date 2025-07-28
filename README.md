@@ -16,10 +16,10 @@
 
 ### SSH to the host
 
-1) sudo -i
-1) git clone $repourl
-1) cd $repo
-1) nix build .#$hostname-diskformat
+1) ```sudo -i```
+1) ```git clone $repourl```
+1) ```cd $repo```
+1) ```nix build .#$hostname-diskformat```
 1) Set hdd encryption key
     1) ```./result/bin/diskformat```
 1) ```nixos-install --flake .#$hostname --no-root-passwd```
@@ -31,8 +31,10 @@
 
 ### Update system
 
-* ```cd $gitrepo```
-* ```nix flake update```
+*   ```shell
+    cd $gitrepo
+    nix flake update
+    ```
 
 ### Test build
 * ```nixos-rebuild build --flake .#$hostname ```
@@ -49,10 +51,23 @@ https://github.com/DeterminateSystems/nix-installer
 
 ### Create iso
 
-```shell
-cd $repo
-nix-build '<nixpkgs/nixos>' -A config.system.build.isoImage -I nixos-config=hosts/x86_64-linux/installer.nix
-```
+*   ```shell
+    cd $gitrepo
+    nix-build '<nixpkgs/nixos>' -A config.system.build.isoImage -I nixos-config=hosts/x86_64-linux/installer.nix
+    ```
+
+#### Test iso
+
+*   ```shell
+    cd $gitrepo
+    nix-shell -p qemu
+    # Create qcow2
+    qemu-img create -f qcow2 rootdisk.img 60G
+    qemu-system-x86_64 -enable-kvm -m 16384 -cdrom result/iso/nixos-*.iso -hda rootdisk.img -smp sockets=1,cores=16
+
+    # Don't forget to remove the rootdisk...
+    rm rootdisk.img
+    ```
 
 ## Wow things
 
