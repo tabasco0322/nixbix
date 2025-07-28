@@ -50,7 +50,7 @@
   virtualisation.podman.dockerCompat = false;
 
   virtualisation.libvirtd = {
-    enable = true;
+    enable = false;
     qemu = {
       package = pkgs.qemu_kvm;
       runAsRoot = true;
