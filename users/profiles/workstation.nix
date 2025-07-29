@@ -11,6 +11,7 @@ in
     [ ./default.nix ]
     ++ [
       ./hyprland.nix
+      ./lutris.nix
       ./rofi.nix
       ./waybar.nix
       ./vscodium.nix
