@@ -1,12 +1,31 @@
-{lib, ...}: {
+{ lib, ... }:
+{
   programs.waybar.enable = true;
   programs.waybar.settings.topBar = {
     bar_id = "top";
     ipc = true;
     position = "top";
-    modules-left = ["hyprland/workspaces" "sway/workspaces" "sway/mode" "hyprland/submap"];
+    modules-left = [
+      "hyprland/workspaces"
+      "sway/workspaces"
+      "sway/mode"
+      "hyprland/submap"
+    ];
     # modules-center = ["hyprland/window"];
-    modules-right = ["network" "network#wifi" "memory" "cpu" "temperature" "idle_inhibitor" "pulseaudio" "blacklight" "battery" "clock" "tray"];
+    modules-right = [
+      "custom/gpu_powerdraw"
+      "network"
+      "network#wifi"
+      "memory"
+      "cpu"
+      "temperature"
+      "idle_inhibitor"
+      "pulseaudio"
+      "blacklight"
+      "battery"
+      "clock"
+      "tray"
+    ];
     "sway/workspaces" = {
       disable-scroll-wraparound = true;
     };
@@ -19,6 +38,11 @@
     "hyprland/submap" = {
       format = "✌️ {}";
       tooltip = false;
+    };
+    "custom/gpu_powerdraw" = {
+      format = "🥵 {text}W ";
+      exec = "nvidia-smi --query-gpu=power.draw --format=csv,noheader,nounits";
+      interval = 5;
     };
     network = {
       interface = lib.mkDefault "enp*";
@@ -65,10 +89,16 @@
         phone = "";
         portable = "";
         car = "";
-        default = ["" ""];
+        default = [
+          ""
+          ""
+        ];
       };
       scroll-step = 1;
-      ignored-sinks = ["Easy Effects Sink" "SteelSeries Arctis 7 Chat"];
+      ignored-sinks = [
+        "Easy Effects Sink"
+        "SteelSeries Arctis 7 Chat"
+      ];
     };
     clock = {
       format = "{:%F %H:%M}";
