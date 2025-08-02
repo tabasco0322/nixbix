@@ -143,46 +143,45 @@ in
 
   wayland.windowManager.hyprland.settings = {
     monitor = [
-      "DP-4, 2560x1440@144.000, 0x0, 1, transform, 1"
-      "DP-3, 3840x2160@240.000, 1440x0, 1"
-      "DP-5, 2560x1440@144.000, 5280x0, 1, transform, 3"
+      "DP-4, preferred, 0x0, 1, transform, 1"
+      "DP-3, preferred, 1440x0, 1.5"
+      "DP-5, preferred, 4000x0, 1, transform, 3"
     ];
     "$mod" = "SUPER";
-    bind =
-      [
-        "$mod, Return, exec, ${terminal-bin}"
-        "$mod SHIFT, q, killactive"
-        "$mod, d, exec, ${pkgs.rofi-wayland}/bin/rofi -show drun"
-        "$mod SHIFT, s, exec, ${screenshot}/bin/screenshot"
-        "$mod, i, exec, hyprlock"
-        "$mod SHIFT, e, exec, ${pkgs.neovide}/bin/neovide"
-        "$mod, left, movefocus, l"
-        "$mod, right, movefocus, r"
-        "$mod, up, movefocus, u"
-        "$mod, down, movefocus, d"
-        "$mod SHIFT, left, movewindoworgroup, l"
-        "$mod SHIFT, right, movewindoworgroup, r"
-        "$mod SHIFT, up, movewindoworgroup, u"
-        "$mod SHIFT, down, movewindoworgroup, d"
-        "$mod, f, fullscreen"
-        "$mod, g, togglegroup"
-        "$mod SHIFT, g, lockactivegroup, toggle"
-        "$mod, Tab, changegroupactive, f"
-        "$mod SHIFT, Tab, changegroupactive, b"
-        "$mod, space, layoutmsg, swapwithmaster"
-        "$mod, m, movecurrentworkspacetomonitor, +1"
-        "$mod SHIFT, space, togglefloating"
-      ]
-      ++ (map (num: "$mod, ${num}, workspace, ${num}") (
-        builtins.genList (x: builtins.toString (x + 1)) 9
-      ))
-      ++ (map (num: "$mod SHIFT, ${num}, movetoworkspacesilent, ${num}") (
-        builtins.genList (x: builtins.toString (x + 1)) 9
-      ))
-      ++ [
-        "$mod, 0, workspace, 10"
-        "$mod SHIFT, 0, movetoworkspacesilent, 10"
-      ];
+    bind = [
+      "$mod, Return, exec, ${terminal-bin}"
+      "$mod SHIFT, q, killactive"
+      "$mod, d, exec, ${pkgs.rofi-wayland}/bin/rofi -show drun"
+      "$mod SHIFT, s, exec, ${screenshot}/bin/screenshot"
+      "$mod, i, exec, hyprlock"
+      "$mod SHIFT, e, exec, ${pkgs.neovide}/bin/neovide"
+      "$mod, left, movefocus, l"
+      "$mod, right, movefocus, r"
+      "$mod, up, movefocus, u"
+      "$mod, down, movefocus, d"
+      "$mod SHIFT, left, movewindoworgroup, l"
+      "$mod SHIFT, right, movewindoworgroup, r"
+      "$mod SHIFT, up, movewindoworgroup, u"
+      "$mod SHIFT, down, movewindoworgroup, d"
+      "$mod, f, fullscreen"
+      "$mod, g, togglegroup"
+      "$mod SHIFT, g, lockactivegroup, toggle"
+      "$mod, Tab, changegroupactive, f"
+      "$mod SHIFT, Tab, changegroupactive, b"
+      "$mod, space, layoutmsg, swapwithmaster"
+      "$mod, m, movecurrentworkspacetomonitor, +1"
+      "$mod SHIFT, space, togglefloating"
+    ]
+    ++ (map (num: "$mod, ${num}, workspace, ${num}") (
+      builtins.genList (x: builtins.toString (x + 1)) 9
+    ))
+    ++ (map (num: "$mod SHIFT, ${num}, movetoworkspacesilent, ${num}") (
+      builtins.genList (x: builtins.toString (x + 1)) 9
+    ))
+    ++ [
+      "$mod, 0, workspace, 10"
+      "$mod SHIFT, 0, movetoworkspacesilent, 10"
+    ];
 
     binde = [
       ", XF86AudioRaiseVolume, exec, ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%"
@@ -196,6 +195,10 @@ in
       "$mod, mouse:272, movewindow"
       "$mod, mouse:273, resizewindow"
     ];
+
+    xwayland = {
+      force_zero_scaling = true;
+    };
 
     misc.disable_hyprland_logo = true;
     misc.disable_splash_rendering = true;
