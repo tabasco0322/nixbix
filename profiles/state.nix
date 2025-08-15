@@ -86,6 +86,7 @@
         "code"
         "git"
         ".ssh"
+        "vmware"
       ];
       files = [
         ".cockroachsql_history"

@@ -49,6 +49,8 @@
   virtualisation.podman.enable = false;
   virtualisation.podman.dockerCompat = false;
 
+  virtualisation.vmware.host.enable = true;
+
   virtualisation.libvirtd = {
     enable = false;
     qemu = {
