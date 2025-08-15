@@ -128,10 +128,6 @@ in
   services.sshguard.enable = true;
   services.fstrim.enable = true;
 
-  systemd.extraConfig = ''
-    DefaultTimeoutStopSec=90
-  '';
-
   users.mutableUsers = false;
 
   system.stateVersion = "24.05";
