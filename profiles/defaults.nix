@@ -51,7 +51,6 @@ in
     pkgs.fish
     pkgs.git
     pkgs.gnupg
-    pkgs.btop
     pkgs.hyperfine
     pkgs.iftop
     pkgs.iptables
