@@ -144,8 +144,8 @@ in
   wayland.windowManager.hyprland.settings = {
     monitor = [
       "DP-4, preferred, 0x0, 1, transform, 1"
-      "DP-3, preferred, 1440x0, 1.5"
-      "DP-5, preferred, 4000x0, 1, transform, 3"
+      "DP-3, preferred, 1440x0, 1.33"
+      "DP-5, preferred, 4327x0, 1, transform, 3"
     ];
     "$mod" = "SUPER";
     bind = [
@@ -320,6 +320,7 @@ in
       "${pkgs.wpaperd}/bin/wpaperd"
       "${pkgs.hyprland}/bin/hyprctl setcursor ${xcursor_theme} 24"
       "${pkgs.polkit_gnome.out}/libexec/polkit-gnome-authentication-agent-1"
+      "[workspace 2 silent] ${pkgs.btop}/bin/btop"
       "[workspace 2 silent] ${pkgs.firefox}/bin/firefox"
       "[workspace 4 silent] ${pkgs.signal-desktop}/bin/signal-desktop"
       "[workspace 4 silent] ${pkgs.tdesktop}/bin/Telegram"
