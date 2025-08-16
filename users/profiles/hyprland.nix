@@ -255,9 +255,9 @@ in
       # shadow_offset = "3 3";
       # "col.shadow" = "0x99000000";
       # "col.shadow_inactive" = "0x55000000";
-      active_opacity = 0.95;
-      inactive_opacity = 0.85;
-      fullscreen_opacity = 1.0;
+      #active_opacity = 0.95;
+      #inactive_opacity = 0.85;
+      #fullscreen_opacity = 1.0;
     };
 
     general = {
