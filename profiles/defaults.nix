@@ -75,6 +75,7 @@ in
     pkgs.vim
     pkgs.wget
     pkgs.zip
+    pkgs.runelite
   ];
 
   home-manager.useUserPackages = true;
