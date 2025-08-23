@@ -1,0 +1,90 @@
+{
+  adminUser,
+  config,
+  lib,
+  ...
+}:
+{
+  publicKey = "";
+
+  imports = [
+    #../../profiles/hardware/usbcore.nix
+    ../../profiles/hardware/intel.nix
+    #../../profiles/admin-user/home-manager.nix
+    ../../profiles/admin-user/user.nix
+    ../../profiles/disk/btrfs-on-luks.nix
+    ../../profiles/k3s.nix
+    #../../profiles/greetd.nix
+    #../../profiles/home-manager.nix
+    #../../profiles/restic-backup.nix
+    ../../profiles/server.nix
+    ../../profiles/state.nix
+    #../../profiles/tailscale.nix
+    ../../profiles/zram.nix
+  ];
+
+  #boot.loader.systemd-boot.memtest86.enable = true;
+
+  boot.loader.systemd-boot.enable = lib.mkForce false;
+  boot.loader.efi.canTouchEfiVariables = lib.mkForce false;
+
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/sdb";
+
+  boot.initrd = {
+    systemd.enable = true;
+  };
+
+  # btrfs.disks = ["/dev/nvme0n1"];
+
+  #services.ratbagd.enable = true;
+
+  #age.secrets = {
+  #  id_ed25519 = {
+  #    file = ../../secrets/id_ed25519.age;
+  #    owner = "${toString adminUser.uid}";
+  #    path = "/home/${adminUser.name}/.ssh/id_ed25519";
+  #  };
+  #};
+
+  boot.initrd.network.ssh = {
+    enable = true;
+    port = 2222;
+    hostKeys = [
+      "/keep/secrets/initrd_ed25519_key"
+    ];
+    authorizedKeys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN5F3BVlkYb6CimwNHkKxMC+FvoLLbhBEPtJEa31BLxq nemko@mba"
+      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIGWqiT3pihX88HrCvpnnsWANv3RJm5SdMJwZkRHpfHj5AAAABHNzaDo= nemko@nixbox"
+    ];
+  };
+
+  btrfs = {
+    disks = [
+      "/dev/sda"
+      "/dev/sdb"
+    ];
+  };
+
+  boot = {
+    kernelParams = [
+      #"ip=138.201.128.250::138.201.128.193:255.255.255.192:nixtzner::none"
+      "ip=::::::dhcp"
+    ];
+    initrd = {
+      availableKernelModules = [
+        "igb"
+        "nvme"
+        "ahci"
+        "usbhid"
+        "i915"
+        "r8169"
+      ];
+      network = {
+        enable = true;
+        flushBeforeStage2 = true;
+        postCommands = "echo 'cryptsetup-askpass' >> /root/.profile";
+      };
+    };
+  };
+}
