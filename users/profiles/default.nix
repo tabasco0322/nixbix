@@ -27,6 +27,7 @@
     p7zip
     virt-manager
     virt-viewer
+    runelite
   ];
 
   xdg.enable = true;
