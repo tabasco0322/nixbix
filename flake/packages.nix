@@ -36,13 +36,6 @@
       )
       // locallyDefinedPackages
       // {
-        cake = pkgs.writeShellApplication {
-          name = "cake";
-          runtimeInputs = with pkgs; [just nushell statix deadnix];
-          text = ''
-            just -f ${../Justfile} -d "$(pwd)" "$@"
-          '';
-        };
         persway = inputs.persway.packages.${system}.default;
 
         flaresolverr-patched = pkgs.flaresolverr.overrideAttrs (oa: {
