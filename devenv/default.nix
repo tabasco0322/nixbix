@@ -33,7 +33,6 @@ in {
     createInstallerIso
     rage
     statix
-    cake
     yj
   ];
 

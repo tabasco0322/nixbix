@@ -29,6 +29,16 @@
 
 ## Nix misc
 
+### Secrets
+
+1) ```pwgen -s 64 1 > $TEMPFILE```
+1) ```cat $TEMPFILE | rage -r $(cat /etc/ssh/ssh_host_ed25519_key.pub) -o $agefile.age```
+    * *Make sure age-file isn't git ignored.*
+
+### K3S
+
+* ```sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config```
+
 ### Update system
 
 *   ```shell

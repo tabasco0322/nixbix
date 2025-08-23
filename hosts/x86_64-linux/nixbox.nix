@@ -2,8 +2,9 @@
   adminUser,
   config,
   ...
-}: {
-  publicKey = "";
+}:
+{
+  publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEyTc9WJCbJ2lF8kX5u+h1y6oGHK816CJ7IRUdgQKTOz";
 
   imports = [
     ../../profiles/hardware/usbcore.nix
@@ -18,6 +19,7 @@
     ../../profiles/state.nix
     #../../profiles/tailscale.nix
     ../../profiles/zram.nix
+    ../../profiles/k3s-master.nix
   ];
 
   boot.loader.systemd-boot.memtest86.enable = true;
@@ -38,18 +40,24 @@
   #  };
   #};
 
-programs.steam.enable = true;
-services.flatpak.enable = true;
+  programs.steam.enable = true;
+  services.flatpak.enable = true;
 
- home-manager = {
-   users.${adminUser.name} = {
-     imports = [../../users/profiles/workstation.nix];
-#      programs.git.extraConfig.user.signingKey = "key::sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIH8FItRsdPvpg8mTCF7gsKQJ4ABaOCE8a6PzamumRWe3AAAABHNzaDo=";
-#      programs.jujutsu.settings.signing = {
-#        sign-all = true;
-#        backend = "ssh";
-#        key = config.age.secrets.id_ed25519.path;
-#      };
-   };
- };
+  home-manager = {
+    users.${adminUser.name} = {
+      imports = [ ../../users/profiles/workstation.nix ];
+      #      programs.git.extraConfig.user.signingKey = "key::sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIH8FItRsdPvpg8mTCF7gsKQJ4ABaOCE8a6PzamumRWe3AAAABHNzaDo=";
+      #      programs.jujutsu.settings.signing = {
+      #        sign-all = true;
+      #        backend = "ssh";
+      #        key = config.age.secrets.id_ed25519.path;
+      #      };
+    };
+  };
+
+  age.secrets = {
+    k3s-token = {
+      file = ../../secrets/k3s/token.age;
+    };
+  };
 }
