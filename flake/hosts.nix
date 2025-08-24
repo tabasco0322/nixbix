@@ -23,6 +23,9 @@ let
     nix.registry.nixpkgs = {
       flake = inputs.nixpkgs;
     };
+    nix.registry.cronge = {
+      flake = inputs.self;
+    };
   };
   mapSystems =
     dir: mapAttrsToList (name: _: name) (filterAttrs (_: type: type == "directory") (readDir dir));

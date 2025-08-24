@@ -1,0 +1,47 @@
+name: Nix Autoupdater
+
+on:
+  workflow_dispatch: {}
+  schedule:
+  - cron: '0 1 * * *'
+
+jobs:
+  update-packages:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: DeterminateSystems/nix-installer-action@v16
+      with:
+        extra-conf: |
+          accept-flake-config = true
+    - name: Run the Magic Nix Cache
+      uses: DeterminateSystems/magic-nix-cache-action@v9
+    - run: |
+        nix shell nixpkgs#git -c git config user.name 'tabasco0322'
+        nix shell nixpkgs#git -c git config user.email 'tabasco0322@users.noreply.github.com'
+        nix flake update
+        nix shell nixpkgs#git -c git commit -am "Update flake inputs"
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v7
+      id: cpr
+      with:
+        token: ${{ secrets.GH_ACCESS_TOKEN }}
+        commit-message: 'Update packages'
+        committer: tabasco0322 <tabasco0322@users.noreply.github.com>
+        author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+        signoff: false
+        branch: package-auto-updates
+        delete-branch: true
+        title: 'Update packages'
+        body: ''
+        labels: |
+          packages
+
+    - name: Enable Pull Request Automerge
+      if: steps.cpr.outputs.pull-request-operation == 'created'
+      uses: peter-evans/enable-pull-request-automerge@v3
+      with:
+        token: ${{ secrets.GH_ACCESS_TOKEN }}
+        pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+        merge-method: squash
