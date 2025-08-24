@@ -30,7 +30,7 @@
   boot.loader.efi.canTouchEfiVariables = lib.mkForce false;
 
   boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sdb";
+  boot.loader.grub.device = "/dev/sda";
 
   # btrfs.disks = ["/dev/nvme0n1"];
 
