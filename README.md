@@ -31,9 +31,15 @@
 
 ### Secrets
 
-1) ```pwgen -s 64 1 > $TEMPFILE```
-1) ```cat $TEMPFILE | rage -r $(cat /etc/ssh/ssh_host_ed25519_key.pub) -o $agefile.age```
-    * *Make sure age-file isn't git ignored.*
+#### Create new secret
+
+1) ```cd $gitrepo/secrets```
+1) ```agenix -e name.age``` 
+
+#### Rekey (When more hosts are added)
+
+1) ```cd $gitrepo/secrets```
+1) ```agenix --rekey```
 
 ### K3S
 

@@ -5,7 +5,7 @@
   ...
 }:
 {
-  publicKey = "";
+  publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL8LN976VdTNVN1wOogdzYa8hPp+X7mFa+yYzXZq7Xjc";
 
   imports = [
     #../../profiles/hardware/usbcore.nix
@@ -14,13 +14,13 @@
     ../../profiles/admin-user/user.nix
     ../../profiles/disk/btrfs-on-luks.nix
     ../../profiles/uuid_disk_crypt.nix
-    ../../profiles/k3s.nix
+    ../../profiles/k3s-agent.nix
     #../../profiles/greetd.nix
     #../../profiles/home-manager.nix
     #../../profiles/restic-backup.nix
     ../../profiles/server.nix
     ../../profiles/state.nix
-    #../../profiles/tailscale.nix
+    ../../profiles/tailscale.nix
     ../../profiles/zram.nix
   ];
 
@@ -51,4 +51,13 @@
     ];
   };
 
+  age.secrets = {
+    k3s-token = {
+      file = ../../secrets/k3s/token.age;
+    };
+    ts = {
+      file = ../../secrets/ts.age;
+      owner = "1100";
+    };
+  };
 }

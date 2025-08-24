@@ -5,7 +5,7 @@
 }:
 {
   imports = [
-    #../profiles/tailscale.nix
+    ../profiles/tailscale.nix
   ];
 
   systemd.services.metadata =
@@ -24,8 +24,8 @@
       description = "Metadata Service";
       after = [ "network.target" ];
       before = [
-        #"tailscale-auth.service"
-        #"tailscaled.service"
+        "tailscale-auth.service"
+        "tailscaled.service"
         "k3s.service"
       ];
       wantedBy = [ "multi-user.target" ];
@@ -38,8 +38,8 @@
   services.k3s = {
     enable = true;
     after = [
-      #"tailscale-auth.service"
-      #"tailscaled.service"
+      "tailscale-auth.service"
+      "tailscaled.service"
     ];
     disable = [
       "servicelb"
@@ -48,25 +48,26 @@
     ];
     settings = {
       token-file = "/run/agenix/k3s-token";
-      #flannel-iface = "tailscale0";
-      flannel-iface = "enp14s0";
+      flannel-iface = "tailscale0";
+      #flannel-iface = "enp14s0";
       node-name = hostName;
-      node-ip = "\"$(get-iface-ip enp14s0)\"";
-      node-external-ip = "\"$(get-iface-ip enp14s0)\"";
+      server = "https://nixbox.tail754457.ts.net:6443";
+      node-ip = "\"$(get-iface-ip tailscale0)\"";
+      node-external-ip = "\"$(get-iface-ip eth0)\"";
       node-label."topology.kubernetes.io/region" = "\"$REGION\"";
       node-label."topology.kubernetes.io/zone" = "\"$ZONE\"";
       node-label."hostname" = hostName;
     };
   };
 
-  # services.tailscale.auth = {
-  #   enable = true;
-  #   args.advertise-tags = [ "tag:server" ];
-  #   args.ssh = true;
-  #   args.accept-routes = false;
-  #   args.accept-dns = true;
-  #   args.auth-key = "file:/var/run/agenix/ts";
-  # };
+  services.tailscale.auth = {
+    enable = true;
+    args.advertise-tags = [ "tag:server" ];
+    args.ssh = true;
+    args.accept-routes = false;
+    args.accept-dns = true;
+    args.auth-key = "file:/var/run/agenix/ts";
+  };
 
   networking.firewall.trustedInterfaces = [
     "cni+"

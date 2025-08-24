@@ -1,6 +1,6 @@
 {
   pkgs,
-  #tailnet,
+  tailnet,
   hostName,
   ...
 }:
@@ -12,8 +12,8 @@
     enable = true;
     role = "server";
     after = [
-      #"tailscale-auth.service"
-      #"tailscaled.service"
+      "tailscale-auth.service"
+      "tailscaled.service"
     ];
 
     settings = {
@@ -22,14 +22,14 @@
       service-cidr = "10.96.0.0/12";
       cluster-dns = "10.96.0.10";
       node-name = hostName;
-      advertise-address = "\"$(get-iface-ip enp14s0)\"";
+      advertise-address = "\"$(get-iface-ip tailscale0)\"";
       kube-controller-manager-arg.node-cidr-mask-size = 24;
       node-label."svccontroller.k3s.cattle.io/enablelb" = "true";
       node-label.hostname = hostName;
       secrets-encryption = true;
       tls-san = [
         hostName
-        #"${hostName}.${tailnet}.ts.net"
+        "${hostName}.${tailnet}.ts.net"
       ];
     };
 
