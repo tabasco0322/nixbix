@@ -32,10 +32,6 @@
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sdb";
 
-  boot.initrd = {
-    systemd.enable = true;
-  };
-
   # btrfs.disks = ["/dev/nvme0n1"];
 
   #services.ratbagd.enable = true;
@@ -48,18 +44,6 @@
   #  };
   #};
 
-  boot.initrd.network.ssh = {
-    enable = true;
-    port = 2222;
-    hostKeys = [
-      "/keep/secrets/initrd_ed25519_key"
-    ];
-    authorizedKeys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN5F3BVlkYb6CimwNHkKxMC+FvoLLbhBEPtJEa31BLxq nemko@mba"
-      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIGWqiT3pihX88HrCvpnnsWANv3RJm5SdMJwZkRHpfHj5AAAABHNzaDo= nemko@nixbox"
-    ];
-  };
-
   btrfs = {
     disks = [
       "/dev/sda"
@@ -67,25 +51,4 @@
     ];
   };
 
-  boot = {
-    kernelParams = [
-      #"ip=138.201.128.250::138.201.128.193:255.255.255.192:nixtzner::none"
-      "ip=::::::dhcp"
-    ];
-    initrd = {
-      availableKernelModules = [
-        "igb"
-        "nvme"
-        "ahci"
-        "usbhid"
-        "i915"
-        "r8169"
-      ];
-      network = {
-        enable = true;
-        flushBeforeStage2 = true;
-        postCommands = "echo 'cryptsetup-askpass' >> /root/.profile";
-      };
-    };
-  };
 }
