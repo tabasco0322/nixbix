@@ -1,0 +1,134 @@
+name: Nix Builder
+
+on:
+  pull_request: {}
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  nix_lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: DeterminateSystems/nix-installer-action@v16
+      with:
+        extra-conf: |
+          accept-flake-config = true
+    - name: Run the Magic Nix Cache
+      uses: DeterminateSystems/magic-nix-cache-action@v9
+    - run: |
+        nix run .#cronge -- lint
+
+  nix_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v16
+        with:
+          extra-conf: |
+            accept-flake-config = true
+      - name: Run the Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v9
+      - run: |
+          nix run .#cronge -- check
+
+  pkgs_x86_64_linux:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.job-matrix.outputs.matrix }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: DeterminateSystems/nix-installer-action@v16
+      with:
+        extra-conf: |
+          accept-flake-config = true
+    - name: Run the Magic Nix Cache
+      uses: DeterminateSystems/magic-nix-cache-action@v9
+    - id: job-matrix
+      run: |
+        echo "matrix=$(nix eval .#github-actions-package-matrix-x86-64-linux --json)" >> "$GITHUB_OUTPUT"
+
+  hosts_x86_64_linux:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.job-matrix.outputs.matrix }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: DeterminateSystems/nix-installer-action@v16
+      with:
+        extra-conf: |
+          accept-flake-config = true
+    - name: Run the Magic Nix Cache
+      uses: DeterminateSystems/magic-nix-cache-action@v9
+    - id: job-matrix
+      run: |
+        echo "matrix=$(nix eval .#github-actions-host-matrix-x86-64-linux --json)" >> "$GITHUB_OUTPUT"
+
+  pkg_x86_64_linux:
+    needs: pkgs_x86_64_linux
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix: ${{ fromJson(needs.pkgs_x86_64_linux.outputs.matrix) }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: DeterminateSystems/nix-installer-action@v16
+      with:
+        extra-conf: |
+          accept-flake-config = true
+    - uses: cachix/cachix-action@v16
+      if: ${{ matrix.pkg != 'pxebooter' }}
+      with:
+        name: blazed
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    - name: Run the Magic Nix Cache
+      uses: DeterminateSystems/magic-nix-cache-action@v9
+    - env:
+        PKG: ${{ matrix.pkg }}
+      run: |
+        nix build .#packages.x86_64-linux.$PKG -L
+
+  # Disable until own runners
+  # host_x86_64_linux:
+  #   needs: hosts_x86_64_linux
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix: ${{ fromJson(needs.hosts_x86_64_linux.outputs.matrix) }}
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - uses: DeterminateSystems/nix-installer-action@v16
+  #     with:
+  #       extra-conf: |
+  #         accept-flake-config = true
+  #   - uses: cachix/cachix-action@v16
+  #     with:
+  #       name: blazed
+  #   - name: Run the Magic Nix Cache
+  #     uses: DeterminateSystems/magic-nix-cache-action@v9
+  #   - env:
+  #       HOST: ${{ matrix.host }}
+  #     run: |
+  #       nix build .#nixosConfigurations.$HOST.config.system.build.toplevel
+
+  summarize:
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    name: Build (matrix)
+    needs: [pkg_x86_64_linux, nix_lint, nix_check]
+    steps:
+      - name: Check linting status
+        if: ${{ needs.nix_lint.result != 'success' }}
+        run: exit 1
+      - name: Check flake check status
+        if: ${{ needs.nix_check.result != 'success' }}
+        run: exit 1
+      # - name: Check x86_64-linux host build matrix status
+      #   if: ${{ needs.host_x86_64_linux.result != 'success' }}
+      #   run: exit 1
+      - name: Check x86_64-linux package build matrix status
+        if: ${{ needs.pkg_x86_64_linux.result != 'success' }}
+        run: exit 1
