@@ -13,6 +13,7 @@
     #../../profiles/admin-user/home-manager.nix
     ../../profiles/admin-user/user.nix
     ../../profiles/disk/btrfs-on-luks.nix
+    ../../profiles/uuid_disk_crypt.nix
     ../../profiles/k3s.nix
     #../../profiles/greetd.nix
     #../../profiles/home-manager.nix
