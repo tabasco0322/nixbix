@@ -1,5 +1,6 @@
 {
   adminUser,
+  lib,
   config,
   ...
 }:
@@ -17,7 +18,7 @@
     ../../profiles/home-manager.nix
     #../../profiles/restic-backup.nix
     ../../profiles/state.nix
-    #../../profiles/tailscale.nix
+    ../../profiles/tailscale.nix
     ../../profiles/zram.nix
     ../../profiles/k3s-master.nix
   ];
@@ -59,5 +60,14 @@
     k3s-token = {
       file = ../../secrets/k3s/token.age;
     };
+    ts = {
+      file = ../../secrets/ts.age;
+      owner = "1100";
+    };
+  };
+
+  services.k3s.settings = {
+    server = lib.mkForce "";
+    node-external-ip = lib.mkForce "\"$(get-iface-ip enp14s0)\"";
   };
 }

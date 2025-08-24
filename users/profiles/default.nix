@@ -28,6 +28,7 @@
     virt-manager
     virt-viewer
     runelite
+    kubectl
   ];
 
   xdg.enable = true;
