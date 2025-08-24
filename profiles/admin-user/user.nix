@@ -2,8 +2,9 @@
   adminUser,
   pkgs,
   ...
-}: {
-  nix.settings.trusted-users = [adminUser.name];
+}:
+{
+  nix.settings.trusted-users = [ adminUser.name ];
   users = {
     users.${adminUser.name} = {
       inherit (adminUser) uid;
@@ -14,7 +15,15 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN5F3BVlkYb6CimwNHkKxMC+FvoLLbhBEPtJEa31BLxq"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOu2XRGagRGIG7uCvcwhsDkB4YtoXqMIcKhXFK1pW8Nr"
       ];
-      extraGroups = ["wheel" "docker" "video" "audio" "kvm" "libvirtd" "podman"];
+      extraGroups = [
+        "wheel"
+        "docker"
+        "video"
+        "audio"
+        "kvm"
+        "libvirtd"
+        "podman"
+      ];
     };
   };
 }

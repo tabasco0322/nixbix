@@ -3,9 +3,11 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   inherit (config) home;
-in {
+in
+{
   programs.neovim = {
     enable = true;
     viAlias = true;
@@ -87,35 +89,34 @@ in {
       which-key-nvim
       zen-mode-nvim
       (nvim-treesitter.withPlugins (
-        plugins:
-          with plugins; [
-            tree-sitter-bash
-            tree-sitter-comment
-            tree-sitter-css
-            tree-sitter-dockerfile
-            tree-sitter-go
-            tree-sitter-graphql
-            tree-sitter-hcl
-            tree-sitter-html
-            tree-sitter-javascript
-            tree-sitter-json
-            tree-sitter-lua
-            tree-sitter-markdown
-            tree-sitter-markdown_inline
-            tree-sitter-nix
-            tree-sitter-nu
-            tree-sitter-org-nvim
-            tree-sitter-proto
-            tree-sitter-regex
-            tree-sitter-rego
-            tree-sitter-rust
-            tree-sitter-sql
-            tree-sitter-toml
-            tree-sitter-tsx
-            tree-sitter-typescript
-            tree-sitter-vue
-            tree-sitter-yaml
-          ]
+        plugins: with plugins; [
+          tree-sitter-bash
+          tree-sitter-comment
+          tree-sitter-css
+          tree-sitter-dockerfile
+          tree-sitter-go
+          tree-sitter-graphql
+          tree-sitter-hcl
+          tree-sitter-html
+          tree-sitter-javascript
+          tree-sitter-json
+          tree-sitter-lua
+          tree-sitter-markdown
+          tree-sitter-markdown_inline
+          tree-sitter-nix
+          tree-sitter-nu
+          tree-sitter-org-nvim
+          tree-sitter-proto
+          tree-sitter-regex
+          tree-sitter-rego
+          tree-sitter-rust
+          tree-sitter-sql
+          tree-sitter-toml
+          tree-sitter-tsx
+          tree-sitter-typescript
+          tree-sitter-vue
+          tree-sitter-yaml
+        ]
       ))
     ];
   };
