@@ -49,7 +49,7 @@ let
         ) hostsWithSecrets
       )
     );
-    nemko = [
+  nemko = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFh4MHoAx2/HhQf6mGnb3HJI8DDJtNkC84dhaNPnHZfE"
   ];
 in

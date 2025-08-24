@@ -7,16 +7,17 @@ let
   inherit (config) gtk;
 in
 {
-  imports =
-    [ ./default.nix ]
-    ++ [
-      ./hyprland.nix
-      ./lutris.nix
-      ./rofi.nix
-      ./waybar.nix
-      ./vscodium.nix
-      ./gnome-keyring.nix
-    ];
+  imports = [
+    ./default.nix
+  ]
+  ++ [
+    ./hyprland.nix
+    ./lutris.nix
+    ./rofi.nix
+    ./waybar.nix
+    ./vscodium.nix
+    ./gnome-keyring.nix
+  ];
 
   home.packages = with pkgs; [
     nautilus
