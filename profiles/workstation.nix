@@ -49,7 +49,7 @@
   virtualisation.podman.enable = false;
   virtualisation.podman.dockerCompat = false;
 
-  virtualisation.vmware.host.enable = true;
+  virtualisation.vmware.host.enable = false;
 
   virtualisation.libvirtd = {
     enable = false;
