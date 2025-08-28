@@ -57,6 +57,7 @@
         ".config/warcraftlogs"
         ".factorio"
         ".gnupg"
+        ".runelite"
         ".local/share/Steam"
         ".local/share/TelegramDesktop"
         ".local/share/atuin"
