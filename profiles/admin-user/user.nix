@@ -14,6 +14,7 @@
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN5F3BVlkYb6CimwNHkKxMC+FvoLLbhBEPtJEa31BLxq"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOu2XRGagRGIG7uCvcwhsDkB4YtoXqMIcKhXFK1pW8Nr"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFh4MHoAx2/HhQf6mGnb3HJI8DDJtNkC84dhaNPnHZfE"
       ];
       extraGroups = [
         "wheel"
