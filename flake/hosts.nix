@@ -79,6 +79,7 @@ let
             hostName = name;
             tailnet = "tail754457";
             inherit adminUser;
+            inherit self;
             hostConfigurations = mapAttrs' (name: conf: {
               inherit name;
               value = conf.config;

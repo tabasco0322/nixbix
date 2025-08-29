@@ -103,6 +103,19 @@
         "type": "github"
       }
     },
+    "cilium-chart": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1755265843,
+        "narHash": "sha256-baUV4ysp1UP3fAdwrPVqXj8PzSNR3UI4YRZworHG71U=",
+        "type": "tarball",
+        "url": "https://github.com/cilium/charts/raw/refs/heads/master/cilium-1.18.1.tgz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://github.com/cilium/charts/raw/refs/heads/master/cilium-1.18.1.tgz"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -890,11 +903,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1756416356,
-        "narHash": "sha256-xcqREhXocGZPbDsvjD7ncDz8++jfX5ZwpGc0maiD9CY=",
+        "lastModified": 1756451161,
+        "narHash": "sha256-4ZMY6S07CW/OIA1ZwCZRreiOMRC5Zqzlr8G1B3fpVrU=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "e4de97a152b367ba92ee590ff67fee4f33c46d92",
+        "rev": "23434fd75614ec677013b3554dbb0481c11dd6ab",
         "type": "github"
       },
       "original": {
@@ -955,6 +968,7 @@
         "age-plugin-yubikey": "age-plugin-yubikey",
         "agenix": "agenix",
         "cachix": "cachix",
+        "cilium-chart": "cilium-chart",
         "devenv": "devenv",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts_2",
