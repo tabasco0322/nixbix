@@ -151,7 +151,7 @@ in
     bind = [
       "$mod, Return, exec, ${terminal-bin}"
       "$mod SHIFT, q, killactive"
-      "$mod, d, exec, ${pkgs.rofi-wayland}/bin/rofi -show drun"
+      "$mod, d, exec, ${pkgs.rofi}/bin/rofi -show drun"
       "$mod SHIFT, s, exec, ${screenshot}/bin/screenshot"
       "$mod, i, exec, hyprlock"
       "$mod SHIFT, e, exec, ${pkgs.neovide}/bin/neovide"
