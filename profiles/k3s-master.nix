@@ -56,8 +56,6 @@ in
             --set enableHostPort=true \
             --set enableNodePort=true \
             --set ipam.operator.clusterPoolIPv4PodCIDRList=${settings.cluster-cidr} \
-            --set ingressController.enabled=true \
-            --set ingressController.loadbalancerMode=dedicated \
             --set encryption.enabled=false \
             --set encryption.type=wireguard \
             --set encryption.nodeEncryption=true > "$out"/cilium.yaml
