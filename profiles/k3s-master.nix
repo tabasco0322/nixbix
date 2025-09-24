@@ -49,13 +49,13 @@ in
             --namespace kube-system \
             --set kubeProxyReplacement=true \
             --set socketLB.hostNamespaceOnly=true \
-            --set cni.exclusive=false \
             --set k8sServiceHost="100.123.142.40" \
             --set k8sServicePort=6443 \
             --set enableExternalIPs=true \
             --set enableHostPort=true \
             --set enableNodePort=true \
             --set ipam.operator.clusterPoolIPv4PodCIDRList=${settings.cluster-cidr} \
+            --set gatewayAPI.enabled=true \
             --set encryption.enabled=false \
             --set encryption.type=wireguard \
             --set encryption.nodeEncryption=true > "$out"/cilium.yaml
