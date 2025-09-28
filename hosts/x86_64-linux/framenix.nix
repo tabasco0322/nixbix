@@ -21,7 +21,6 @@
     ../../profiles/state.nix
     ../../profiles/tailscale.nix
     ../../profiles/zram.nix
-    ../../profiles/k3s-master.nix
   ];
 
   boot.loader.systemd-boot.memtest86.enable = true;
@@ -30,9 +29,6 @@
     systemd.enable = true;
   };
 
-  # btrfs.disks = ["/dev/nvme0n1"];
-
-  services.ratbagd.enable = true;
 
   #age.secrets = {
   #  id_ed25519 = {
