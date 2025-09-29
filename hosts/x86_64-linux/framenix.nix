@@ -17,6 +17,7 @@
     ../../profiles/desktop.nix
     ../../profiles/greetd.nix
     ../../profiles/home-manager.nix
+    ../../profiles/k3s-agent.nix
     #../../profiles/restic-backup.nix
     ../../profiles/state.nix
     ../../profiles/tailscale.nix
