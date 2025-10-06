@@ -36,6 +36,7 @@
         ".cache/rbw"
         ".cache/zellij"
         ".cargo"
+        ".config/LM Studio"
         ".config/Signal"
         ".config/WowUpCf"
         ".config/beekeeper-studio"
@@ -57,6 +58,7 @@
         ".config/warcraftlogs"
         ".factorio"
         ".gnupg"
+        ".lmstudio"
         ".runelite"
         ".local/share/Steam"
         ".local/share/TelegramDesktop"
@@ -93,6 +95,7 @@
         ".cockroachsql_history"
         ".config/nushell/history.txt"
         ".kube/config"
+        ".lmstudio-home-pointer"
       ];
     };
   };
