@@ -33,6 +33,7 @@ in
     vesktop
     nixfmt-rfc-style
     libsecret
+    lmstudio
   ];
 
   xdg.configFile."wpaperd/wallpaper.toml".source = pkgs.writeText "wallpaper.toml" ''
