@@ -2,18 +2,14 @@
 {
   programs.git = {
     enable = true;
-    delta = {
-      enable = true;
-      options.features = "decorations side-by-side line-numbers";
-    };
     # TODO
-    userName = "tabasco0322";
-    userEmail = "example@example.com";
-    aliases = {
-      co = "checkout";
-      cob = "checkout -b";
-    };
-    extraConfig = {
+    settings = {
+      user.name = "tabasco0322";
+      user.email = "example@example.com";
+      aliases = {
+        co = "checkout";
+        cob = "checkout -b";
+      };
       core = {
         quotepath = false;
         editor = "nvim";
@@ -48,6 +44,13 @@
     ignores = [
       ".nvimlog" # TODO(blazed): find out why this is needed?
     ];
+  };
+
+  programs.delta = {
+    enable = true;
+    options = {
+      features = "decorations side-by-side line-numbers";
+    };
   };
 
   programs.gh = {
