@@ -19,7 +19,7 @@ in
     extraPackages = with pkgs; [
       actionlint
       docker-compose-language-service
-      dockerfile-language-server-nodejs
+      dockerfile-language-server
       eslint_d
       gofumpt
       gopls
