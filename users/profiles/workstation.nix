@@ -25,7 +25,7 @@ in
     scrot
     signal-desktop
     spotify
-    tdesktop # # Telegram
+    telegram-desktop
     vulkan-loader
     wl-clipboard
     wl-clipboard-x11
