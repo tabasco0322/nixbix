@@ -325,7 +325,7 @@ in
       "[workspace 2 silent] ${pkgs.btop}/bin/btop"
       "[workspace 2 silent] ${pkgs.firefox}/bin/firefox"
       "[workspace 4 silent] ${pkgs.signal-desktop}/bin/signal-desktop"
-      "[workspace 4 silent] ${pkgs.tdesktop}/bin/Telegram"
+      "[workspace 4 silent] ${pkgs.telegram-desktop}/bin/Telegram"
       "[workspace 4 silent] ${pkgs.spotify}/bin/spotify"
       "[workspace 5 silent] ${pkgs.steam}/bin/steam"
       "[workspace 5 silent] ${pkgs.lutris}/bin/lutris"
