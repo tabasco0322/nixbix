@@ -1,0 +1,5 @@
+{
+  enableVNC = false;
+
+  modKey = "SUPER";
+}

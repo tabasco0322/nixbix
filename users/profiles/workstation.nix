@@ -1,10 +1,14 @@
 {
   pkgs,
   config,
+  hostName,
   ...
 }:
 let
   inherit (config) gtk;
+  inherit (import ../../hostvars/${hostName}.nix)
+    enableVNC
+    ;
 in
 {
   imports = [
@@ -17,7 +21,8 @@ in
     ./waybar.nix
     ./vscodium.nix
     ./gnome-keyring.nix
-  ];
+  ]
+  ++ (if enableVNC then [ ./vnc.nix ] else [ ]);
 
   home.packages = with pkgs; [
     nautilus

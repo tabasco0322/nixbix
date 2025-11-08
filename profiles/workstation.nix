@@ -3,8 +3,13 @@
   config,
   pkgs,
   inputs,
+  hostName,
   ...
 }:
+let
+  inherit (import ../hostvars/${hostName}.nix)
+    ;
+in
 {
   imports = [
     ./defaults.nix

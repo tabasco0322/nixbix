@@ -1,0 +1,5 @@
+{
+  enableVNC = true;
+
+  modKey = "ALT";
+}

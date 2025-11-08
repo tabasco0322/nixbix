@@ -2,9 +2,13 @@
   config,
   lib,
   pkgs,
+  hostName,
   ...
 }:
 let
+  inherit (import ../../hostvars/${hostName}.nix)
+    modKey
+    ;
   screenshot = pkgs.writeShellApplication {
     name = "screenshot";
     runtimeInputs = [ pkgs.hyprshot ];
@@ -149,7 +153,7 @@ in
       "DP-5, preferred, 2880x0, 1, transform, 3"
       #"DP-5, disable"
     ];
-    "$mod" = "SUPER";
+    "$mod" = "${modKey}";
     bind = [
       "$mod, Return, exec, ${terminal-bin}"
       "$mod SHIFT, q, killactive"
@@ -324,7 +328,6 @@ in
     exec-once = [
       "${pkgs.hyprland}/bin/hyprctl setcursor ${xcursor_theme} 24"
       "${pkgs.polkit_gnome.out}/libexec/polkit-gnome-authentication-agent-1"
-      "[workspace 2 silent] ${pkgs.btop}/bin/btop"
       "[workspace 2 silent] ${pkgs.firefox}/bin/firefox"
       "[workspace 4 silent] ${pkgs.signal-desktop}/bin/signal-desktop"
       "[workspace 4 silent] ${pkgs.telegram-desktop}/bin/Telegram"

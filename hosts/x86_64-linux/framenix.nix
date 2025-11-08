@@ -9,7 +9,7 @@
 
   imports = [
     ../../profiles/hardware/usbcore.nix
-    ../../profiles/hardware/amd.nix
+    ../../profiles/hardware/fw_desktop.nix
     ../../profiles/admin-user/home-manager.nix
     ../../profiles/admin-user/user.nix
     ../../profiles/disk/btrfs-on-luks.nix
@@ -18,6 +18,8 @@
     ../../profiles/greetd.nix
     ../../profiles/home-manager.nix
     ../../profiles/k3s-agent.nix
+    ../../profiles/nfs.nix
+    ../../profiles/aio_media.nix
     #../../profiles/restic-backup.nix
     ../../profiles/state.nix
     ../../profiles/tailscale.nix
@@ -38,6 +40,10 @@
   #    path = "/home/${adminUser.name}/.ssh/id_ed25519";
   #  };
   #};
+
+  networking.firewall.allowedTCPPorts = [
+    5900
+  ];
 
   programs.steam.enable = true;
   services.flatpak.enable = true;

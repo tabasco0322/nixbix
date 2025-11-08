@@ -1,9 +1,14 @@
 {
+  adminUser,
   pkgs,
   lib,
+  hostName,
   ...
 }:
 let
+  inherit (import ../hostvars/${hostName}.nix)
+    enableVNC
+    ;
   runViaSystemdCat =
     {
       name,
@@ -152,6 +157,8 @@ in
     enable = true;
     restart = true;
     settings = {
+      initial_session.user = lib.mkIf enableVNC "${adminUser.name}";
+      initial_session.command = lib.mkIf enableVNC "${pkgs.hyprland}/bin/Hyprland";
       default_session.command = "${createGreeter "${runHyprland}/bin/Hyprland" sessions}/bin/greeter";
     };
   };
