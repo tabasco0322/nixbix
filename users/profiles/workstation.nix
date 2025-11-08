@@ -36,17 +36,6 @@ in
     lmstudio
   ];
 
-  xdg.configFile."wpaperd/wallpaper.toml".source = pkgs.writeText "wallpaper.toml" ''
-    [default]
-    path = "~/Pictures/wallpapers"
-    duration = "30m"
-    sorting = "random"
-    apply-shadow = false
-
-    [any]
-    group = 1
-  '';
-
   xdg.configFile."mimeapps.list".force = true;
   xdg.mime.enable = true;
   xdg.mimeApps = {
@@ -74,9 +63,6 @@ in
       "application/x-exension-xht" = "firefox.desktop";
     };
   };
-
-  home.file."Pictures/wallpapers/default-background.jpg".source =
-    "${pkgs.adapta-backgrounds}/share/backgrounds/adapta/tri-fadeno.jpg";
 
   base16-theme.enable = true;
 

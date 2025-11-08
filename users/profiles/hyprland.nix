@@ -202,8 +202,11 @@ in
       force_zero_scaling = true;
     };
 
-    misc.disable_hyprland_logo = true;
-    misc.disable_splash_rendering = true;
+    misc = {
+      disable_hyprland_logo = true;
+      disable_splash_rendering = true;
+      background_color = "0x000000";
+    };
 
     group = {
       groupbar = {
@@ -319,7 +322,6 @@ in
     ];
 
     exec-once = [
-      "${pkgs.wpaperd}/bin/wpaperd"
       "${pkgs.hyprland}/bin/hyprctl setcursor ${xcursor_theme} 24"
       "${pkgs.polkit_gnome.out}/libexec/polkit-gnome-authentication-agent-1"
       "[workspace 2 silent] ${pkgs.btop}/bin/btop"
