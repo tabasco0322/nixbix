@@ -1,6 +1,12 @@
 {
+  pkgs,
+  ...
+}:
+{
   programs.ssh = {
     enable = true;
+    # temp fix since 10.1p1 was super slow, remember to delete pkgs import
+    package = pkgs.openssh_10_2;
     enableDefaultConfig = false;
 
     matchBlocks = {
