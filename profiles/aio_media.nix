@@ -4,77 +4,251 @@
   config,
   ...
 }:
+let
+  acmehosts = [
+    {
+      domain = "fin.cronge.ai";
+      port = 8096;
+    }
+    {
+      domain = "jelly.cronge.ai";
+      port = 8096;
+    }
+    {
+      domain = "qb.cronge.ai";
+      port = 8080;
+    }
+    {
+      domain = "son.cronge.ai";
+      port = 8989;
+    }
+    {
+      domain = "rad.cronge.ai";
+      port = 7878;
+    }
+    {
+      domain = "prwl.cronge.ai";
+      port = 9696;
+    }
+    {
+      domain = "flr.cronge.ai";
+      port = 8191;
+    }
+    {
+      domain = "seer.cronge.ai";
+      port = 5055;
+    }
+  ];
+in
 {
-  services.deluge = {
-    enable = true;
-    declarative = true;
-    authFile = "/var/lib/deluge/auth";
-    openFirewall = true;
-    web.enable = true;
-    web.openFirewall = true;
-    config = {
-      download_location = "/mnt/media/torrents/incomplete";
-      dht = false;
-      upnp = false;
-      utpex = false;
-      lsd = false;
-      natpmp = false;
-      copy_torrent_file = true;
-      torrentfiles_location = "/mnt/media/torrents/saved_torrents";
-      move_completed = true;
-      move_completed_path = "/mnt/media/torrents/finished";
-      random_port = false;
-      listen_ports = [
-        57788
-        57788
-      ];
-      enabled_plugins = [
-        "Label"
-        "Stats"
-        "SimpleExtractor"
-      ];
-      max_active_seeding = -1;
-      max_active_downloading = 5;
-      max_active_limit = -1;
-      stop_seed_at_ratio = false;
-      remove_seed_at_ratio = false;
-      stop_seed_ratio = 2.0;
-      share_ratio_limit = 2.0;
-      seed_time_limit = 10080;
-      seed_time_ratio_limit = -1;
-      max_upload_slots_global = -1;
-      dont_count_slow_torrents = true;
-      max_connections_global = 1000;
-      auto_managed = false;
+
+  users = {
+    users = {
+      media = {
+        isNormalUser = true;
+        uid = 1110;
+        description = "User for media server related applications";
+        group = "media";
+      };
+    };
+    groups = {
+      media = {
+        gid = 1110;
+      };
     };
   };
 
-  systemd.services.deluged = {
-    after = [
-      "mnt-media.mount"
-    ];
+  services.qbittorrent = {
+    enable = true;
+    torrentingPort = 63333;
+    openFirewall = true;
+    user = "media";
+    group = "media";
+    serverConfig = {
+      LegalNotice.Accepted = true;
+      Application = {
+        FileLogger = {
+          Age = 1;
+          AgeType = 1;
+          Backup = true;
+          DeleteOld = true;
+          Enabled = true;
+          MaxSizeBytes = 66560;
+          Path = "/var/lib/qBittorrent/qBittorrent/data/logs";
+        };
+      };
+      BitTorrent = {
+        Session = {
+          AddTorrentStopped = "false";
+          DefaultSavePath = "/mnt/media/qb/downloads";
+          ExcludedFileNames = "";
+          GlobalDLSpeedLimit = 25000;
+          MaxActiveDownloads = 5;
+          MaxActiveTorrents = 500;
+          MaxActiveUploads = 500;
+          MaxConnections = 1000;
+          MaxConnectionsPerTorrent = 200;
+          MaxUploads = 40;
+          MaxUploadsPerTorrent = 10;
+          Port = 63333;
+          QueueingSystemEnabled = false;
+          ShareLimitAction = "Stop";
+          TempPath = "/mnt/media/qb/temp";
+          TempPathEnabled = true;
+          TorrentExportDirectory = "/mnt/media/qb/torrents";
+        };
+      };
+      Core = {
+        AutoDeleteAddedTorrentFile = "Never";
+      };
+      Meta = {
+        MigrationVersion = 8;
+      };
+      Network = {
+        PortForwardingEnabled = false;
+      };
+      Preferences = {
+        General = {
+          Locale = "en";
+        };
+        MailNotification = {
+          req_auth = true;
+        };
+        WebUI = {
+          Username = "admin";
+          Password_PBKDF2 = "@ByteArray(yJZO1x0imoPCwWQIrjkRBQ==:pLI8ONQ2sr+Wk5AKHx4zMpyxZN2BWrsMBcu4qQ0kN6LuwqHiCuylSGZw8hc27IIqhmFepNjZL5sRlsU+y4UNsA==)";
+        };
+      };
+      RSS = {
+        AutoDownloader = {
+          DownloadRepacks = false;
+          SmartEpisodeFilter = "";
+        };
+      };
+    };
   };
 
   services.jellyfin = {
     enable = true;
     openFirewall = true;
-    user = "deluge";
-    group = "deluge";
+    user = "media";
+    group = "media";
   };
 
   environment.systemPackages = with pkgs; [
     jellyfin-ffmpeg
   ];
 
-  systemd.services.jellyfin = {
-    after = [ "mnt-media.mount" ];
+  services.jellyseerr = {
+    enable = true;
   };
 
-  environment.persistence."/keep".directories = [
-    "/var/lib/deluge"
-    "/var/lib/jellyfin"
-    "/var/lib/prowlarr"
-    "/var/lib/radarr"
-    "/var/lib/sonarr"
-  ];
+  services.sonarr = {
+    enable = true;
+    user = "media";
+    group = "media";
+  };
+
+  services.radarr = {
+    enable = true;
+    user = "media";
+    group = "media";
+  };
+
+  services.prowlarr = {
+    enable = true;
+  };
+
+  services.flaresolverr = {
+    enable = true;
+  };
+
+  security.acme = {
+    acceptTerms = true;
+    defaults = {
+      email = "wiro1037@gmail.com";
+      dnsProvider = "cloudflare";
+      dnsResolver = "1.1.1.1:53";
+      environmentFile = "/run/agenix/acme-cf";
+      reloadServices = [ "caddy" ];
+    };
+
+    certs = builtins.listToAttrs (
+      map (h: {
+        name = h.domain;
+        value = {
+          inherit (config.services.caddy) group;
+          domain = "${h.domain}";
+        };
+      }) acmehosts
+    );
+  };
+
+  services.caddy = {
+    enable = true;
+    virtualHosts = builtins.listToAttrs (
+      map (h: {
+        name = h.domain;
+        value = {
+          extraConfig = ''
+            reverse_proxy http://localhost:${toString h.port}
+            tls /var/lib/acme/${h.domain}/cert.pem /var/lib/acme/${h.domain}/key.pem {
+              protocols tls1.3
+            }
+          '';
+        };
+      }) acmehosts
+    );
+  };
+
+  systemd.services = {
+    jellyfin = {
+      after = [ "mnt-media.mount" ];
+    };
+
+    jellyseerr = {
+      after = [ "mnt-media.mount" ];
+      serviceConfig = {
+        DynamicUser = lib.mkForce false;
+        User = "media";
+        Group = "media";
+      };
+    };
+
+    prowlarr = {
+      after = [ "mnt-media.mount" ];
+      serviceConfig = {
+        DynamicUser = lib.mkForce false;
+        StateDirectory = lib.mkForce null;
+        User = "media";
+        Group = "media";
+      };
+    };
+
+    radarr = {
+      after = [ "mnt-media.mount" ];
+    };
+
+    sonarr = {
+      after = [ "mnt-media.mount" ];
+    };
+
+    qbittorrent = {
+      after = [ "mnt-media.mount" ];
+    };
+  };
+
+  environment.persistence."/keep" = {
+    hideMounts = true;
+    directories = [
+      "/var/lib/acme"
+      "/var/lib/caddy"
+      "/var/lib/jellyfin"
+      "/var/lib/jellyseerr"
+      "/var/lib/prowlarr"
+      "/var/lib/radarr"
+      "/var/lib/sonarr"
+      "/var/lib/qBittorrent"
+    ];
+  };
 }
