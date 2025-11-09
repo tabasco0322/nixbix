@@ -68,6 +68,9 @@
       file = ../../secrets/ts.age;
       owner = "1100";
     };
+    acme-cf = {
+      file = ../../secrets/acme-cf.age;
+    };
   };
 
   #services.k3s.settings = {
