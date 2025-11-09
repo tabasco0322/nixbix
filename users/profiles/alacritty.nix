@@ -13,6 +13,9 @@
         dynamic_padding = false;
         opacity = 1.0;
       };
+      selection = {
+        save_to_clipboard = true;
+      };
       scrolling = {
         history = 10000;
         multiplier = 3;
