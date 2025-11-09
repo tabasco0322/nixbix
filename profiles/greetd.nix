@@ -157,8 +157,10 @@ in
     enable = true;
     restart = true;
     settings = {
-      initial_session.user = lib.mkIf enableVNC "${adminUser.name}";
-      initial_session.command = lib.mkIf enableVNC "${pkgs.hyprland}/bin/Hyprland";
+      initial_session = lib.mkIf enableVNC {
+        user = "${adminUser.name}";
+        command = "${pkgs.hyprland}/bin/Hyprland";
+      };
       default_session.command = "${createGreeter "${runHyprland}/bin/Hyprland" sessions}/bin/greeter";
     };
   };
