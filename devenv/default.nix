@@ -18,12 +18,12 @@ let
     name = "project-build";
     runtimeInputs = [ pkgs.watchexec ];
     text = ''
-      watchexec -r -- 'cake lint; cake dead; cake dscheck'
+      watchexec -r -- 'cronge lint; cronge dead; cronge dscheck'
     '';
   };
 in
 {
-  name = "cake";
+  name = "cronge";
 
   packages = with pkgs; [
     age-plugin-yubikey
@@ -40,7 +40,7 @@ in
 
   enterShell = ansiEscape ''
      echo -e "
-      {bold}{106}Cake{reset}
+      {bold}{106}cronge{reset}
     "
   '';
 }
