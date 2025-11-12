@@ -47,6 +47,7 @@
     home-manager.url = "github:nix-community/home-manager";
     hyprland.url = "github:hyprwm/Hyprland";
     impermanence.url = "github:nix-community/impermanence";
+    lazyvim.url = "github:pfassina/lazyvim-nix";
     mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
     nix2container.inputs.nixpkgs.follows = "nixpkgs";
     nix2container.url = "github:nlewo/nix2container";

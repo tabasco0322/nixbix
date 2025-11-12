@@ -114,6 +114,11 @@ in
 
   programs.fish.enable = true;
 
+  environment.shellAliases = {
+    vi = "nvim";
+    vim = "nvim";
+  };
+
   programs.command-not-found.dbPath = "${./..}/programs.sqlite";
 
   security.sudo.extraConfig = ''

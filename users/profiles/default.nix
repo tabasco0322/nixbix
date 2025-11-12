@@ -8,8 +8,8 @@
     ./bat.nix
     ./dunst.nix
     ./firefox.nix
+    ./lazyvim.nix
     ./git.nix
-    ./neovim/default.nix
     ./ssh.nix
     ./starship.nix
   ];
