@@ -48,6 +48,7 @@
 
   programs.delta = {
     enable = true;
+    enableGitIntegration = true;
     options = {
       features = "decorations side-by-side line-numbers";
     };

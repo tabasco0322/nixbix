@@ -70,6 +70,7 @@
         ".local/share/lutris"
         ".local/share/keyrings"
         ".local/share/nix"
+        ".local/share/nvim"
         ".local/share/vulkan"
         ".local/share/zoxide"
         ".local/state/pipewire/media-session.d"
