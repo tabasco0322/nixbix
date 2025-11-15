@@ -43,6 +43,7 @@
 
   networking.firewall.allowedTCPPorts = [
     5900
+    443
   ];
 
   programs.steam.enable = true;
