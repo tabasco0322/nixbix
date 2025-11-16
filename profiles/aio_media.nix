@@ -91,7 +91,7 @@ in
           MaxUploads = 40;
           MaxUploadsPerTorrent = 10;
           Port = 63333;
-          QueueingSystemEnabled = false;
+          QueueingSystemEnabled = true;
           ShareLimitAction = "Stop";
           TempPath = "/mnt/media/qb/temp";
           TempPathEnabled = true;
@@ -244,6 +244,7 @@ in
       "/var/lib/acme"
       "/var/lib/caddy"
       "/var/lib/jellyfin"
+      "/var/cache/jellyfin/" # transcoding hurts
       "/var/lib/jellyseerr"
       "/var/lib/prowlarr"
       "/var/lib/radarr"
