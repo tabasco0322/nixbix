@@ -13,7 +13,7 @@
     ../../profiles/admin-user/home-manager.nix
     ../../profiles/admin-user/user.nix
     ../../profiles/disk/btrfs-on-luks.nix
-    ../../profiles/uuid_disk_crypt.nix 
+    ../../profiles/uuid_disk_crypt.nix
     ../../profiles/desktop.nix
     ../../profiles/greetd.nix
     ../../profiles/home-manager.nix
@@ -32,6 +32,12 @@
     systemd.enable = true;
   };
 
+  boot.kernelParams = [
+    # Kernel params set according to https://github.com/rjmalagon/ollama-linux-amd-apu
+    # https://wiki.archlinux.org/title/Framework_Desktop#Unified_memory
+    "ttm.pages_limit=4194304"
+    "ttm.page_pool_size=4194304"
+  ];
 
   #age.secrets = {
   #  id_ed25519 = {
