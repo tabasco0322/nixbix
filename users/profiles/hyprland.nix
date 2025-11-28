@@ -284,8 +284,8 @@ in
     };
 
     layerrule = [
-      "blur,waybar"
-      "ignorealpha,waybar"
+      "match:workspace waybar, blur off"
+      "match:workspace waybar, ignore_alpha on"
     ];
 
     input = {
@@ -307,18 +307,14 @@ in
       no_update_news = true;
     };
 
-    windowrulev2 = [
-      "dimaround,class:gitui"
-      "float,class:gitui"
-      "size 60% 60%,class:gitui"
-      "center,class:gitui"
-      "dimaround,class:chrome-nngceckbapebfimnlniiiahkandclblb-Default"
-      "float,class:chrome-nngceckbapebfimnlniiiahkandclblb-Default"
-      "size 60% 60%,class:chrome-nngceckbapebfimnlniiiahkandclblb-Default"
-      "center,class:chrome-nngceckbapebfimnlniiiahkandclblb-Default"
-      "dimaround,title:Open File"
-      "float,title:Open File"
-      "center,title:Open File"
+    windowrule = [
+      "dim_around on,match:class gitui"
+      "float on,match:class gitui"
+      "size 60% 60%,match:class gitui"
+      "center on,match:class gitui"
+      "dim_around on,match:title Open File"
+      "float on,match:title Open File"
+      "center on,match:title Open File"
     ];
 
     exec = [
