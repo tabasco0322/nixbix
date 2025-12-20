@@ -38,6 +38,10 @@ let
       domain = "seer.cronge.ai";
       port = 5055;
     }
+    {
+      domain = "over.cronge.ai";
+      port = 5055;
+    }
   ];
 in
 {
