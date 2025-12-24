@@ -76,6 +76,14 @@ let
     cmd = "${pkgs.hyprland}/bin/Hyprland";
   };
 
+  runPlasma = runViaShell {
+    env = {
+      XDG_SESSION_TYPE = "wayland";
+    };
+    name = "Plasma";
+    cmd = "startplasma-wayland";
+  };
+
   desktopSession =
     name: command:
     pkgs.writeText "${name}.desktop" ''
@@ -86,6 +94,10 @@ let
     '';
 
   sessions = [
+    {
+      name = "Plasma.desktop";
+      path = desktopSession "Plasma" "startplasma-wayland";
+    }
     {
       name = "Hyprland.desktop";
       path = desktopSession "Hyprland" "${runHyprland}/bin/Hyprland";
@@ -110,6 +122,7 @@ let
     pkgs.writeShellApplication {
       name = "greeter";
       runtimeInputs = [
+        runPlasma
         runHyprland
         pkgs.bashInteractive
         pkgs.nushell

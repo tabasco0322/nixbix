@@ -8,6 +8,8 @@ let
   inherit (config) gtk;
   inherit (import ../../hostvars/${hostName}.nix)
     enableVNC
+    enableHypr
+    enablePlasma
     ;
 in
 {
@@ -15,14 +17,15 @@ in
     ./default.nix
   ]
   ++ [
-    ./hyprland.nix
     ./lutris.nix
     ./rofi.nix
     ./waybar.nix
     ./vscodium.nix
     ./gnome-keyring.nix
   ]
-  ++ (if enableVNC then [ ./vnc.nix ] else [ ]);
+  ++ (if enableVNC then [ ./vnc.nix ] else [ ])
+  ++ (if enableHypr then [ ./hyprland.nix ] else [ ])
+  ++ (if enablePlasma then [ ./plasma.nix ] else [ ]);
 
   home.packages = with pkgs; [
     nautilus

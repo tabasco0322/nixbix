@@ -48,6 +48,7 @@
   #};
 
   networking.firewall.allowedTCPPorts = [
+    5900
   ];
 
   services.write-iwd-secrets.enable = true;
