@@ -1,5 +1,6 @@
 {
   enableVNC = true;
-
-  modKey = "ALT";
+  enablePlasma = true;
+  enableHypr = true;
+  modKey = "SUPER";
 }
