@@ -16,6 +16,7 @@
 
   home.sessionVariables = {
     COLORTERM = "truecolor";
+    EDITOR = "nvim";
   };
 
   home.packages = with pkgs; [
