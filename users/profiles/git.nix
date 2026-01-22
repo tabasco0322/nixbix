@@ -65,7 +65,7 @@
       };
     };
     extensions = [
-      pkgs.gh-copilot
+      pkgs.github-copilot-cli
     ];
   };
 }

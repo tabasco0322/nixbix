@@ -36,7 +36,7 @@ in
     wl-clipboard-x11
     xdg-utils
     vesktop
-    nixfmt-rfc-style
+    nixfmt
     libsecret
     lmstudio
   ];
