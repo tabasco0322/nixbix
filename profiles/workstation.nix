@@ -93,7 +93,10 @@ in
     dconf
     sushi
   ];
-  services.udev.packages = with pkgs; [ gnome-settings-daemon ];
+  services.udev.packages = with pkgs; [
+    wooting-udev-rules
+    gnome-settings-daemon
+  ];
 
   services.pipewire = {
     enable = true;
