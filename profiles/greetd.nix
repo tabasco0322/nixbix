@@ -73,7 +73,7 @@ let
       XDG_SESSION_DESKTOP = "Hyprland";
     };
     name = "Hyprland";
-    cmd = "${pkgs.hyprland}/bin/Hyprland";
+    cmd = "${pkgs.hyprland}/bin/start-hyprland";
   };
 
   desktopSession =
@@ -159,7 +159,7 @@ in
     settings = {
       initial_session = lib.mkIf enableVNC {
         user = "${adminUser.name}";
-        command = "${pkgs.hyprland}/bin/Hyprland";
+        command = "${pkgs.hyprland}/bin/start-hyprland";
       };
       default_session.command = "${createGreeter "${runHyprland}/bin/Hyprland" sessions}/bin/greeter";
     };
