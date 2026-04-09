@@ -12,6 +12,7 @@
     ./git.nix
     ./ssh.nix
     ./starship.nix
+    ./ai.nix
   ];
 
   home.sessionVariables = {
