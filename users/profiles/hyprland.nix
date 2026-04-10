@@ -8,6 +8,7 @@
 let
   inherit (import ../../hostvars/${hostName}.nix)
     modKey
+    enableVNC
     ;
   screenshot = pkgs.writeShellApplication {
     name = "screenshot";
@@ -134,25 +135,38 @@ in
     bind=,return,submap,reset
     submap=reset
 
-    workspace=1,monitor:DP-3,default:true
-    workspace=3,monitor:DP-3
-    workspace=5,monitor:DP-3
+    ${
+      if enableVNC then
+        ""
+      else
+        ''
+          workspace=1,monitor:DP-3,default:true
+          workspace=3,monitor:DP-3
+          workspace=5,monitor:DP-3
 
-    workspace=7,monitor:DP-5,default:true,layoutopt:orientation:top
-    workspace=9,monitor:DP-5,layoutopt:orientation:bottom
+          workspace=7,monitor:DP-5,default:true,layoutopt:orientation:top
+          workspace=9,monitor:DP-5,layoutopt:orientation:bottom
 
-    workspace=2,monitor:DP-4,default:true,layoutopt:orientation:bottom
-    workspace=4,monitor:DP-4,layoutopt:orientation:top
+          workspace=2,monitor:DP-4,default:true,layoutopt:orientation:bottom
+          workspace=4,monitor:DP-4,layoutopt:orientation:top
+        ''
+    }
   '';
 
   wayland.windowManager.hyprland.settings = {
-    monitor = [
-      "DP-3, preferred, 0x0, 1.33"
-      "DP-4, preferred, -1440x0, 1, transform, 1"
-      #"DP-4, disable"
-      "DP-5, preferred, 2880x0, 1, transform, 3"
-      #"DP-5, disable"
-    ];
+    monitor =
+      if enableVNC then
+        [
+          ", 1920x1080@60, 0x0, 1"
+        ]
+      else
+        [
+          "DP-3, preferred, 0x0, 1.33"
+          "DP-4, preferred, -1440x0, 1, transform, 1"
+          #"DP-4, disable"
+          "DP-5, preferred, 2880x0, 1, transform, 3"
+          #"DP-5, disable"
+        ];
     "$mod" = "${modKey}";
     bind = [
       "$mod, Return, exec, ${terminal-bin}"
@@ -324,13 +338,25 @@ in
     exec-once = [
       "${pkgs.hyprland}/bin/hyprctl setcursor ${xcursor_theme} 24"
       "${pkgs.polkit_gnome.out}/libexec/polkit-gnome-authentication-agent-1"
-      "[workspace 2 silent] ${pkgs.firefox}/bin/firefox"
-      "[workspace 4 silent] ${pkgs.signal-desktop}/bin/signal-desktop"
-      "[workspace 4 silent] ${pkgs.telegram-desktop}/bin/Telegram"
-      "[workspace 4 silent] ${pkgs.spotify}/bin/spotify"
-      "[workspace 5 silent] ${pkgs.steam}/bin/steam"
-      "[workspace 5 silent] ${pkgs.lutris}/bin/lutris"
-      "[workspace 7 silent] ${pkgs.vesktop}/bin/vesktop"
-    ];
+    ]
+    ++ (
+      if enableVNC then
+        [
+          "[workspace 1 silent] ${pkgs.firefox}/bin/firefox"
+          "[workspace 2 silent] ${pkgs.signal-desktop}/bin/signal-desktop"
+          "[workspace 2 silent] ${pkgs.telegram-desktop}/bin/Telegram"
+          "[workspace 2 silent] ${pkgs.vesktop}/bin/vesktop"
+        ]
+      else
+        [
+          "[workspace 2 silent] ${pkgs.firefox}/bin/firefox"
+          "[workspace 4 silent] ${pkgs.signal-desktop}/bin/signal-desktop"
+          "[workspace 4 silent] ${pkgs.telegram-desktop}/bin/Telegram"
+          "[workspace 4 silent] ${pkgs.spotify}/bin/spotify"
+          "[workspace 5 silent] ${pkgs.steam}/bin/steam"
+          "[workspace 5 silent] ${pkgs.lutris}/bin/lutris"
+          "[workspace 7 silent] ${pkgs.vesktop}/bin/vesktop"
+        ]
+    );
   };
 }

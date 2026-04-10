@@ -76,6 +76,101 @@ let
     cmd = "${pkgs.hyprland}/bin/start-hyprland";
   };
 
+  # VNC wrapper: starts Hyprland, waits for its socket, creates a headless
+  # output, launches wayvnc, then waits on Hyprland so greetd tracks the
+  # session lifetime correctly.
+  runHyprlandVNC = pkgs.writeShellApplication {
+    name = "HyprlandVNC";
+    runtimeInputs = [
+      pkgs.hyprland
+      pkgs.wayvnc
+      pkgs.jq
+      pkgs.coreutils
+      pkgs.findutils
+    ];
+    text = ''
+      export XDG_SESSION_TYPE="wayland"
+      export XDG_CURRENT_DESKTOP="Hyprland"
+      export XDG_SESSION_DESKTOP="Hyprland"
+
+      if [ -e /etc/profiles/per-user/"$USER"/etc/profile.d/hm-session-vars.sh ]; then
+        set +u
+        # shellcheck disable=SC1090
+        source /etc/profiles/per-user/"$USER"/etc/profile.d/hm-session-vars.sh
+        set -u
+      fi
+
+      XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+
+      # Start Hyprland in the background
+      start-hyprland &
+      HYPRLAND_PID=$!
+
+      # Wait for the Hyprland IPC socket to appear
+      INSTANCE_DIR=""
+      for _i in $(seq 1 30); do
+        INSTANCE_DIR=$(find "$XDG_RUNTIME_DIR/hypr/" -maxdepth 1 -mindepth 1 -type d -newer "/proc/$HYPRLAND_PID" 2>/dev/null | head -1 || true)
+        if [ -n "$INSTANCE_DIR" ] && [ -e "$INSTANCE_DIR/.socket.sock" ]; then
+          break
+        fi
+        INSTANCE_DIR=""
+        sleep 0.5
+      done
+
+      if [ -z "$INSTANCE_DIR" ]; then
+        echo "ERROR: Hyprland socket did not appear within 15s" >&2
+        kill "$HYPRLAND_PID" 2>/dev/null || true
+        exit 1
+      fi
+
+      export HYPRLAND_INSTANCE_SIGNATURE
+      HYPRLAND_INSTANCE_SIGNATURE=$(basename "$INSTANCE_DIR")
+
+      # Discover WAYLAND_DISPLAY for wayvnc
+      WAYLAND_DISPLAY=""
+      for _i in $(seq 1 10); do
+        for sock in "$XDG_RUNTIME_DIR"/wayland-*; do
+          case "$sock" in
+            *.lock) continue ;;
+          esac
+          if [ -e "$sock" ]; then
+            WAYLAND_DISPLAY=$(basename "$sock")
+            break
+          fi
+        done
+        [ -n "$WAYLAND_DISPLAY" ] && break
+        sleep 0.5
+      done
+      export WAYLAND_DISPLAY
+
+      if [ -z "$WAYLAND_DISPLAY" ]; then
+        echo "ERROR: WAYLAND_DISPLAY not found" >&2
+        kill "$HYPRLAND_PID" 2>/dev/null || true
+        exit 1
+      fi
+
+      # Create a headless output if none exists
+      existing=$(hyprctl monitors -j | jq -r '[.[] | select(.name | startswith("HEADLESS-"))][0].name // empty')
+      if [ -z "$existing" ]; then
+        hyprctl output create headless
+        sleep 1
+        existing=$(hyprctl monitors -j | jq -r '[.[] | select(.name | startswith("HEADLESS-"))][0].name // empty')
+      fi
+
+      if [ -z "$existing" ]; then
+        echo "ERROR: Failed to get a headless monitor" >&2
+        kill "$HYPRLAND_PID" 2>/dev/null || true
+        exit 1
+      fi
+
+      # Launch wayvnc in the background bound to the headless output
+      wayvnc --gpu --max-fps=60 --render-cursor -o "$existing" &
+
+      # Wait on Hyprland so greetd tracks session lifetime
+      wait "$HYPRLAND_PID"
+    '';
+  };
+
   desktopSession =
     name: command:
     pkgs.writeText "${name}.desktop" ''
@@ -159,7 +254,7 @@ in
     settings = {
       initial_session = lib.mkIf enableVNC {
         user = "${adminUser.name}";
-        command = "${pkgs.hyprland}/bin/start-hyprland";
+        command = "${runHyprlandVNC}/bin/HyprlandVNC";
       };
       default_session.command = "${createGreeter "${runHyprland}/bin/Hyprland" sessions}/bin/greeter";
     };
