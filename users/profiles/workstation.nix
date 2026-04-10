@@ -98,5 +98,6 @@ in
       package = pkgs.nordic;
       name = "Nordic-darker";
     };
+    gtk4.theme = null;
   };
 }
