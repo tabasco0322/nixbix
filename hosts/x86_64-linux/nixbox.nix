@@ -66,8 +66,10 @@
     };
   };
 
-  services.k3s.settings = {
-    server = lib.mkForce "";
-    node-external-ip = lib.mkForce "\"$(get-iface-ip enp14s0)\"";
+  services.k3s = {
+    serverAddr = lib.mkForce "";
+    settings = {
+      node-external-ip = lib.mkForce "\"$(get-iface-ip enp14s0)\"";
+    };
   };
 }

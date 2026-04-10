@@ -45,14 +45,14 @@
 
   services.k3s = {
     enable = true;
+    serverAddr = "https://nixbox.tail754457.ts.net:6443";
+    tokenFile = "/run/agenix/k3s-token";
     after = [
       "tailscale-auth.service"
       "metadata.service"
     ];
     settings = {
-      token-file = "/run/agenix/k3s-token";
       node-name = hostName;
-      server = "https://nixbox.tail754457.ts.net:6443";
       node-ip = "\"$(get-iface-ip tailscale0)\"";
       node-external-ip = "\"$(get-default-route-ip)\"";
       node-label."topology.kubernetes.io/region" = "\"$REGION\"";
