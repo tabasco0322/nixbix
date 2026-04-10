@@ -143,7 +143,7 @@ in
     jellyfin-ffmpeg
   ];
 
-  services.jellyseerr = {
+  services.seerr = {
     enable = true;
   };
 
@@ -210,7 +210,7 @@ in
       after = [ "mnt-media.mount" ];
     };
 
-    jellyseerr = {
+    seerr = {
       after = [ "mnt-media.mount" ];
       serviceConfig = {
         DynamicUser = lib.mkForce false;
