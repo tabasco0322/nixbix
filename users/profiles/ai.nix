@@ -1,7 +1,6 @@
-{ pkgs, ... }:
 {
-  home.packages = with pkgs; [
-    claude-code
-    opencode
+  imports = [
+    ./claude.nix
+    ./opencode.nix
   ];
 }
