@@ -19,7 +19,6 @@ in
     ./lutris.nix
     ./rofi.nix
     ./waybar.nix
-    ./vscodium.nix
     ./gnome-keyring.nix
   ]
   ++ (if enableVNC then [ ./vnc.nix ] else [ ]);
