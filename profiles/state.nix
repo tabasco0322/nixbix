@@ -59,6 +59,7 @@
         ".config/spotify"
         ".config/VSCodium"
         ".config/warcraftlogs"
+        ".config/zellij"
         ".factorio"
         ".gnupg"
         ".lmstudio"
