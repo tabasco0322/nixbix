@@ -27,7 +27,7 @@
         diff = "auto";
         status = "auto";
         branch = "auto";
-        interacive = "auto";
+        interactive = "auto";
         ui = true;
         pager = true;
       };
