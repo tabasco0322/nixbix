@@ -16,6 +16,6 @@
   systemd.user.services.wayvnc.Service = {
     ExecStart = lib.mkForce "${lib.getExe pkgs.wayvnc} --max-fps=60 --gpu 0.0.0.0 5900";
     Restart = "always";
-    RestartSec = 10;
+    RestartSec = 2;
   };
 }
