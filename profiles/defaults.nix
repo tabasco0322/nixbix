@@ -119,8 +119,6 @@ in
     vim = "nvim";
   };
 
-  programs.command-not-found.dbPath = "${./..}/programs.sqlite";
-
   security.sudo.extraConfig = ''
     Defaults  lecture="never"
   '';
