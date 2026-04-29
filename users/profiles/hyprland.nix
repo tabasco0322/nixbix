@@ -62,7 +62,7 @@ in
       label = [
         {
           monitor = "";
-          text = ''cmd[update:1000] echo "<span foreground='##660000'>"$(date +"%-H:%M")"</span>"'';
+          text = ''cmd[update:1000] echo "<span foreground='##660000'>"$(date +"%H:%M")"</span>"'';
           color = "rgba(102, 0, 0, 0.75)";
           font_size = 95;
           font_family = "JetBrains Mono Extrabold";
