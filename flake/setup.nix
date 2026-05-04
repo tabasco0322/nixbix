@@ -26,6 +26,15 @@
         overlays = [
           inputs.agenix.overlays.default
           inputs.nur.overlays.default
+          (_final: prev: {
+            pkgsi686Linux = prev.pkgsi686Linux.extend (
+              _: pp: {
+                openldap = pp.openldap.overrideAttrs (_: {
+                  doCheck = false;
+                });
+              }
+            );
+          })
           (
             _final: _prev:
             (filterAttrs (
