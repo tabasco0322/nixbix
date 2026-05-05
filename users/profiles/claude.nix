@@ -3,6 +3,7 @@
     enable = true;
     settings = {
       model = "opus";
+      effortLevel = "medium";
       permissions = {
         allow = [
           "Bash(git diff:*)"
