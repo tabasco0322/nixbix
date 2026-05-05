@@ -7,6 +7,9 @@ wifi-networks
 cached-iso.iso
 yubikey-identity.txt
 /secrets/**/*
+!/secrets/**/
 !/secrets/*.nix
 !/secrets/*.age
 !/secrets/*.pub
+!/secrets/**/*.age
+!/secrets/**/*.pub

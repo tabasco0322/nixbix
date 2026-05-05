@@ -1,5 +1,6 @@
 {
   adminUser,
+  hostName,
   lib,
   config,
   ...
@@ -52,6 +53,28 @@
     443
   ];
 
+  networking.private-wireguard = {
+    enable = true;
+    privateKeyFile = "/run/agenix/wg-private";
+    # Proton-assigned addresses from the [Interface] Address line.
+    ips = [
+      "10.2.0.2/32"
+      "2a07:b944::2:2/128"
+    ];
+    peers = [
+      {
+        # From the [Peer] section of the Proton WireGuard config.
+        publicKey = "cfDg7Cz1q3WiJp6bzAr68QXd/Eu7fYepYC9gh3YQaDA=";
+        endpoint = "31.13.191.98:51820";
+        allowedIPs = [
+          "0.0.0.0/0"
+          "::/0"
+        ];
+        persistentKeepalive = 25;
+      }
+    ];
+  };
+
   programs.steam.enable = true;
   services.flatpak.enable = true;
 
@@ -70,6 +93,12 @@
   age.secrets = {
     k3s-token = {
       file = ../../secrets/k3s/token.age;
+    };
+    wg-private = {
+      file = ../../secrets/${hostName}/wg-private.age;
+    };
+    qb-webui-password = {
+      file = ../../secrets/${hostName}/qb-webui-password.age;
     };
     ts = {
       file = ../../secrets/ts.age;
