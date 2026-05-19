@@ -7,31 +7,29 @@
     enable = true;
     enableDefaultConfig = false;
 
-    matchBlocks = {
+    settings = {
       "*" = {
-        controlPersist = "30m";
-        controlMaster = "auto";
-        controlPath = "~/.ssh/master-%r@%n:%p";
-        serverAliveInterval = 60;
-        serverAliveCountMax = 3;
-        hashKnownHosts = false;
-        forwardAgent = true;
-        addKeysToAgent = "no";
-        compression = false;
+        ControlPersist = "30m";
+        ControlMaster = "auto";
+        ControlPath = "~/.ssh/master-%r@%n:%p";
+        ServerAliveInterval = 60;
+        ServerAliveCountMax = 3;
+        HashKnownHosts = false;
+        ForwardAgent = true;
+        AddKeysToAgent = "no";
+        Compression = false;
       };
       "github github.com" = {
-        hostname = "github.com";
-        user = "git";
-        forwardAgent = false;
-        extraOptions = {
-          preferredAuthentications = "publickey";
-          controlMaster = "no";
-          controlPath = "none";
-        };
+        Hostname = "github.com";
+        User = "git";
+        ForwardAgent = false;
+        PreferredAuthentications = "publickey";
+        ControlMaster = "no";
+        ControlPath = "none";
       };
       "framenix" = {
-        user = "nemko";
-        forwardAgent = true;
+        User = "nemko";
+        ForwardAgent = true;
       };
     };
   };
