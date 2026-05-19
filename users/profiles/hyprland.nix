@@ -112,6 +112,7 @@ in
   };
 
   wayland.windowManager.hyprland.enable = true;
+ wayland.windowManager.hyprland.configType = "hyprlang";
   wayland.windowManager.hyprland.extraConfig = ''
     bind=$mod,escape,submap,(p)oweroff, (s)uspend, (h)ibernate, (r)eboot, (l)ogout
     submap=(p)oweroff, (s)uspend, (h)ibernate, (r)eboot, (l)ogout
@@ -299,7 +300,6 @@ in
 
     layerrule = [
       "match:workspace waybar, blur off"
-      "match:workspace waybar, ignore_alpha on"
     ];
 
     input = {
