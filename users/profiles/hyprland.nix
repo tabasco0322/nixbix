@@ -162,7 +162,7 @@ in
         ]
       else
         [
-          "DP-3, preferred, 0x0, 1.33"
+          "DP-3, preferred, 0x0, 1.333333"
           "DP-4, preferred, -1440x0, 1, transform, 1"
           #"DP-4, disable"
           "DP-5, preferred, 2880x0, 1, transform, 3"
