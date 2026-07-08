@@ -16,7 +16,9 @@
     powerManagement.enable = false;
     powerManagement.finegrained = false;
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.beta;
+    # RTX 5090 (Blackwell) needs a recent driver; `beta` (595.x) fails to build
+    # against linuxPackages_latest (kernel 7.0). `latest` tracks the newest packaged driver.
+    package = config.boot.kernelPackages.nvidiaPackages.latest;
   };
 
   #boot.initrd.kernelModules = [ "nvidia" ];
