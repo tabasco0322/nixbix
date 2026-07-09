@@ -92,6 +92,7 @@
         ".wine"
         "Documents"
         "Downloads"
+        "Faugus"
         "Games"
         "Photos"
         "Pictures"
