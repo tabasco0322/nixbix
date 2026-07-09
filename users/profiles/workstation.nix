@@ -15,6 +15,7 @@ in
     ./default.nix
   ]
   ++ [
+    ./faugus.nix
     ./hyprland.nix
     ./lutris.nix
     ./rofi.nix
