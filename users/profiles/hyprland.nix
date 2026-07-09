@@ -355,6 +355,7 @@ in
           "[workspace 4 silent] ${pkgs.spotify}/bin/spotify"
           "[workspace 5 silent] ${pkgs.steam}/bin/steam"
           "[workspace 5 silent] ${pkgs.lutris}/bin/lutris"
+          "[workspace 5 silent] ${pkgs.faugus-launcher}/bin/faugus-launcher"
           "[workspace 7 silent] ${pkgs.vesktop}/bin/vesktop"
         ]
     );
