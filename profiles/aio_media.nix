@@ -101,8 +101,8 @@ in
           ExcludedFileNames = "";
           GlobalDLSpeedLimit = 25000;
           MaxActiveDownloads = 5;
-          MaxActiveTorrents = 500;
-          MaxActiveUploads = 500;
+          MaxActiveTorrents = 5000;
+          MaxActiveUploads = 5000;
           MaxConnections = 1000;
           MaxConnectionsPerTorrent = 200;
           MaxUploads = 40;
