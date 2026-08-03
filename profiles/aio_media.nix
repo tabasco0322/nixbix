@@ -15,6 +15,10 @@ let
       port = 8096;
     }
     {
+      domain = "hippo.cronge.ai";
+      port = 8096;
+    }
+    {
       domain = "jelly.cronge.ai";
       port = 8096;
     }
@@ -40,6 +44,10 @@ let
     }
     {
       domain = "seer.cronge.ai";
+      port = 5055;
+    }
+    {
+      domain = "hipposeer.cronge.ai";
       port = 5055;
     }
     {
