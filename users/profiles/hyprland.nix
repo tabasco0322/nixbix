@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
   hostName,
@@ -52,7 +53,8 @@ let
 
   exec = cmd: "hl.dsp.exec_cmd(${builtins.toJSON cmd})";
 
-  powerSubmap = "(p)oweroff, (s)uspend, (h)ibernate, (r)eboot, (l)ogout";
+  dmsPackage = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  dmsIPC = args: exec "${dmsPackage}/bin/dms ipc call ${args}";
 
   workspaceNums = builtins.genList (x: x + 1) 9 ++ [ 10 ];
 
@@ -98,131 +100,9 @@ in
     NIXOS_OZONE_WL = "1";
   };
 
-  programs.hyprlock = {
-    enable = true;
-    settings = {
-      general = {
-        disable_loading_bar = true;
-        grace = 5;
-        hide_cursor = true;
-        no_fade_in = false;
-      };
-      auth = [
-        {
-          "fingerprint:enabled" = true;
-        }
-      ];
-      background = [
-        {
-          path = "screenshot";
-          blur_passes = 3;
-          blur_size = 8;
-        }
-      ];
-      label = [
-        {
-          monitor = "";
-          text = ''cmd[update:1000] echo "<span foreground='##660000'>"$(date +"%H:%M")"</span>"'';
-          color = "rgba(102, 0, 0, 0.75)";
-          font_size = 95;
-          font_family = "JetBrains Mono Extrabold";
-          position = "0, 200";
-          halign = "center";
-          valign = "center";
-        }
-      ];
-      input-field = [
-        {
-          size = "200, 50";
-          position = "0, -80";
-          monitor = "";
-          dots_center = true;
-          fade_on_empty = false;
-          font_color = "rgb(202, 211, 245)";
-          inner_color = "rgb(91, 96, 120)";
-          outer_color = "rgb(24, 25, 38)";
-          outline_thickness = 5;
-          placeholder_text = ''<span foreground="##cad3f5">Password...</span>'';
-          shadow_passes = 2;
-        }
-      ];
-    };
-  };
-
-  services.hypridle = {
-    enable = true;
-    settings = {
-      general = {
-        after_sleep_cmd = "hyprctl dispatch dpms on";
-        ignore_dbus_inhibit = false;
-        lock_cmd = "hyprlock";
-      };
-      listener = [
-        {
-          timeout = 300;
-          on-timeout = "hyprlock";
-        }
-        {
-          timeout = 900;
-          on-timeout = "hyprctl dispatch dpms off";
-          on-resume = "hyprctl dispatch dpms on";
-        }
-      ];
-    };
-  };
-
   wayland.windowManager.hyprland.enable = true;
   # Hyprland 0.56 dropped hyprlang entirely; hyprland.conf is no longer read.
   wayland.windowManager.hyprland.configType = "lua";
-
-  # The submap name is what waybar's hyprland/submap module renders, so it
-  # doubles as the on-screen key hint. Keep it verbatim.
-  wayland.windowManager.hyprland.submaps.${powerSubmap} = {
-    settings.bind = [
-      {
-        _args = [
-          "P"
-          (mkLuaInline (exec "systemctl poweroff"))
-        ];
-      }
-      {
-        _args = [
-          "S"
-          (mkLuaInline (exec "systemctl suspend-then-hibernate"))
-        ];
-      }
-      {
-        _args = [
-          "H"
-          (mkLuaInline (exec "systemctl hibernate"))
-        ];
-      }
-      {
-        _args = [
-          "R"
-          (mkLuaInline (exec "systemctl reboot"))
-        ];
-      }
-      {
-        _args = [
-          "L"
-          (mkLuaInline "hl.dsp.exit()")
-        ];
-      }
-      {
-        _args = [
-          "escape"
-          (mkLuaInline ''hl.dsp.submap("reset")'')
-        ];
-      }
-      {
-        _args = [
-          "Return"
-          (mkLuaInline ''hl.dsp.submap("reset")'')
-        ];
-      }
-    ];
-  };
 
   wayland.windowManager.hyprland.settings = {
     mod = {
@@ -304,11 +184,11 @@ in
     bind = [
       (bind "Return" (exec terminal-bin))
       (bind "SHIFT + Q" "hl.dsp.window.close()")
-      (bind "D" (exec "${pkgs.rofi}/bin/rofi -show drun"))
+      (bind "D" (dmsIPC "spotlight toggle"))
       (bind "SHIFT + S" (exec "${screenshot}/bin/screenshot"))
-      (bind "I" (exec "hyprlock"))
+      (bind "I" (dmsIPC "lock lock"))
       (bind "SHIFT + E" (exec "${pkgs.neovide}/bin/neovide"))
-      (bind "escape" "hl.dsp.submap(${builtins.toJSON powerSubmap})")
+      (bind "escape" (dmsIPC "powermenu toggle"))
       (bind "left" ''hl.dsp.focus({ direction = "l" })'')
       (bind "right" ''hl.dsp.focus({ direction = "r" })'')
       (bind "up" ''hl.dsp.focus({ direction = "u" })'')
@@ -335,21 +215,12 @@ in
       bind "SHIFT + ${toString (lib.mod num 10)}" "hl.dsp.window.move({ workspace = ${toString num}, follow = false })"
     ) workspaceNums)
     ++ [
-      (bindBare "XF86AudioRaiseVolume"
-        (exec "${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%")
-        { repeating = true; }
-      )
-      (bindBare "XF86AudioLowerVolume"
-        (exec "${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%")
-        { repeating = true; }
-      )
-      (bindBare "XF86AudioMute" (exec "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle")
-        {
-          repeating = true;
-        }
-      )
-      (bindBare "XF86MonBrightnessUp" (exec "light -A 5") { repeating = true; })
-      (bindBare "XF86MonBrightnessDown" (exec "light -U 5") { repeating = true; })
+      # The trailing "" on brightness selects the default backlight device.
+      (bindBare "XF86AudioRaiseVolume" (dmsIPC "audio increment 5") { repeating = true; })
+      (bindBare "XF86AudioLowerVolume" (dmsIPC "audio decrement 5") { repeating = true; })
+      (bindBare "XF86AudioMute" (dmsIPC "audio mute") { repeating = true; })
+      (bindBare "XF86MonBrightnessUp" (dmsIPC ''brightness increment 5 ""'') { repeating = true; })
+      (bindBare "XF86MonBrightnessDown" (dmsIPC ''brightness decrement 5 ""'') { repeating = true; })
       (bindOpts "mouse:272" "hl.dsp.window.drag()" { mouse = true; })
       (bindOpts "mouse:273" "hl.dsp.window.resize()" { mouse = true; })
     ];
@@ -470,14 +341,6 @@ in
         enabled = true;
         speed = 1;
         bezier = "default";
-      }
-    ];
-
-    layer_rule = [
-      {
-        name = "waybar-no-blur";
-        match.namespace = "waybar";
-        blur = false;
       }
     ];
 

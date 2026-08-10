@@ -31,10 +31,14 @@
     cilium-chart.url = "https://github.com/cilium/charts/raw/refs/heads/master/cilium-1.18.1.tgz";
     cilium-chart.flake = false;
     #crane.url = "github:ipetkov/crane";
+    dank-greeter.inputs.nixpkgs.follows = "nixpkgs";
+    dank-greeter.url = "github:AvengeMedia/dank-greeter";
     devenv.inputs.flake-compat.follows = "flake-compat";
     devenv.inputs.nixpkgs.follows = "nixpkgs";
     devenv.inputs.cachix.follows = "cachix";
     devenv.url = "github:cachix/devenv";
+    dms.inputs.nixpkgs.follows = "nixpkgs";
+    dms.url = "github:AvengeMedia/DankMaterialShell/stable";
     #disko.inputs.nixpkgs.follows = "nixpkgs";
     #disko.url = "github:nix-community/disko";
     #fenix.inputs.nixpkgs.follows = "nixpkgs";

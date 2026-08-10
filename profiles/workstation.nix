@@ -35,13 +35,6 @@ in
 
   environment.pathsToLink = [ "/etc/gconf" ];
 
-  security.pam.services.swaylock = {
-    text = ''
-      auth include login
-    '';
-  };
-  security.pam.services.hyprlock = { };
-
   security.pam.services.gdm.enableGnomeKeyring = true; # load gnome-keyring at startup
   programs.seahorse.enable = true; # enable the graphical frontend for managing
 

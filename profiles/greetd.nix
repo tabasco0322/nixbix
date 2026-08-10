@@ -1,5 +1,6 @@
 {
   adminUser,
+  inputs,
   pkgs,
   lib,
   hostName,
@@ -130,85 +131,49 @@ let
       Exec=${command}
     '';
 
-  sessions = [
-    {
-      name = "Hyprland.desktop";
-      path = desktopSession "Hyprland" "${runHyprland}/bin/Hyprland";
-    }
-    {
-      name = "nushell.desktop";
-      path = desktopSession "nushell" "${pkgs.nushell}/bin/nu";
-    }
-    {
-      name = "bash.desktop";
-      path = desktopSession "bash" "${pkgs.bashInteractive}/bin/bash";
-    }
-  ];
-
-  createGreeter =
-    default: sessions:
-    let
-      sessionDir = pkgs.linkFarm "sessions" (
-        builtins.filter (item: item.name != "${default}.desktop") sessions
-      );
-    in
-    pkgs.writeShellApplication {
-      name = "greeter";
-      runtimeInputs = [
-        runHyprland
-        pkgs.bashInteractive
-        pkgs.nushell
-        pkgs.systemd
-        pkgs.tuigreet
-      ];
-      text = ''
-        tuigreet --sessions ${sessionDir} --time -r --remember-session --power-shutdown 'systemctl poweroff' --power-reboot 'systemctl reboot' --cmd ${default}
+  # dms-greeter resolves autologin by reading Exec= out of the chosen session's
+  # desktop file, so HyprlandVNC has to exist as a session of its own.
+  sessions =
+    pkgs.runCommand "nixbix-wayland-sessions"
+      {
+        passthru.providedSessions = [
+          "Hyprland"
+          "HyprlandVNC"
+          "nushell"
+          "bash"
+        ];
+      }
+      ''
+        mkdir -p "$out/share/wayland-sessions"
+        ln -s ${desktopSession "Hyprland" "${runHyprland}/bin/Hyprland"} "$out/share/wayland-sessions/Hyprland.desktop"
+        ln -s ${desktopSession "HyprlandVNC" "${runHyprlandVNC}/bin/HyprlandVNC"} "$out/share/wayland-sessions/HyprlandVNC.desktop"
+        ln -s ${desktopSession "nushell" "${pkgs.nushell}/bin/nu"} "$out/share/wayland-sessions/nushell.desktop"
+        ln -s ${desktopSession "bash" "${pkgs.bashInteractive}/bin/bash"} "$out/share/wayland-sessions/bash.desktop"
       '';
-    };
+
+  defaultSession = if enableVNC then "HyprlandVNC" else "Hyprland";
 in
 {
-  programs.regreet.enable = true;
+  imports = [ inputs.dank-greeter.nixosModules.default ];
 
-  environment.systemPackages = [
-    pkgs.nordic
-    pkgs.nordzy-cursor-theme
-    pkgs.nordzy-icon-theme
-  ];
-
-  programs.regreet.settings = {
-    commands = {
-      reboot = [
-        "systemctl"
-        "reboot"
-      ];
-      poweroff = [
-        "systemctl"
-        "poweroff"
-      ];
-    };
-    appearance = {
-      greeting_msg = "Welcome back!";
-    };
-    GTK = {
-      cursor_theme_name = lib.mkForce "Nordzy-cursors";
-      font_name = lib.mkForce "Roboto Medium 14";
-      icon_theme_name = lib.mkForce "Nordzy-dark";
-      theme_name = lib.mkForce "Nordic-darker";
-      application_prefer_dark_theme = lib.mkForce true;
-    };
-  };
-
-  services.greetd = {
+  programs.dms-greeter = {
     enable = true;
-    restart = true;
-    settings = {
-      initial_session = lib.mkIf enableVNC {
-        user = "${adminUser.name}";
-        command = "${runHyprlandVNC}/bin/HyprlandVNC";
-      };
-      default_session.command = "${createGreeter "${runHyprland}/bin/Hyprland" sessions}/bin/greeter";
+    package = inputs.dank-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    compositor.name = "hyprland";
+    configHome = "/home/${adminUser.name}";
+  };
+
+  services.displayManager = {
+    inherit defaultSession;
+    sessionPackages = [ sessions ];
+    autoLogin = lib.mkIf enableVNC {
+      enable = true;
+      user = adminUser.name;
     };
   };
+
+  services.greetd.restart = true;
+
   systemd.services.greetd.serviceConfig = {
     ExecStartPre = "${pkgs.util-linux}/bin/kill -SIGRTMIN+21 1";
     ExecStopPost = "${pkgs.util-linux}/bin/kill -SIGRTMIN+20 1";
