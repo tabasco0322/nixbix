@@ -10,6 +10,8 @@ let
     modKey
     enableVNC
     ;
+  inherit (lib.generators) mkLuaInline;
+
   screenshot = pkgs.writeShellApplication {
     name = "screenshot";
     runtimeInputs = [ pkgs.hyprshot ];
@@ -20,6 +22,65 @@ let
 
   xcursor_theme = config.gtk.cursorTheme.name;
   terminal-bin = "${pkgs.alacritty}/bin/alacritty";
+
+  # Binds are `hl.bind(key, dispatcher, opts?)`. The key is built off the `mod`
+  # local emitted from settings.mod, so it stays a Lua expression rather than a
+  # baked-in string.
+  modKeyExpr = combo: mkLuaInline ''mod .. " + ${combo}"'';
+
+  bind = combo: dispatcher: {
+    _args = [
+      (modKeyExpr combo)
+      (mkLuaInline dispatcher)
+    ];
+  };
+  bindOpts = combo: dispatcher: opts: {
+    _args = [
+      (modKeyExpr combo)
+      (mkLuaInline dispatcher)
+      opts
+    ];
+  };
+  # Media keys carry no modifier, so the key is a plain string.
+  bindBare = key: dispatcher: opts: {
+    _args = [
+      key
+      (mkLuaInline dispatcher)
+      opts
+    ];
+  };
+
+  exec = cmd: "hl.dsp.exec_cmd(${builtins.toJSON cmd})";
+
+  powerSubmap = "(p)oweroff, (s)uspend, (h)ibernate, (r)eboot, (l)ogout";
+
+  workspaceNums = builtins.genList (x: x + 1) 9 ++ [ 10 ];
+
+  autostart =
+    if enableVNC then
+      [
+        "[workspace 1 silent] ${pkgs.firefox}/bin/firefox"
+        "[workspace 2 silent] ${pkgs.signal-desktop}/bin/signal-desktop"
+        "[workspace 2 silent] ${pkgs.telegram-desktop}/bin/Telegram"
+        "[workspace 2 silent] ${pkgs.vesktop}/bin/vesktop"
+      ]
+    else
+      [
+        "[workspace 2 silent] ${pkgs.firefox}/bin/firefox"
+        "[workspace 4 silent] ${pkgs.signal-desktop}/bin/signal-desktop"
+        "[workspace 4 silent] ${pkgs.telegram-desktop}/bin/Telegram"
+        "[workspace 4 silent] ${pkgs.spotify}/bin/spotify"
+        "[workspace 5 silent] ${pkgs.steam}/bin/steam"
+        "[workspace 5 silent] ${pkgs.lutris}/bin/lutris"
+        "[workspace 5 silent] ${pkgs.faugus-launcher}/bin/faugus-launcher"
+        "[workspace 7 silent] ${pkgs.vesktop}/bin/vesktop"
+      ];
+
+  startupCommands = [
+    "${pkgs.hyprland}/bin/hyprctl setcursor ${xcursor_theme} 24"
+    "${pkgs.polkit_gnome.out}/libexec/polkit-gnome-authentication-agent-1"
+  ]
+  ++ autostart;
 in
 {
   home.sessionVariables = {
@@ -112,252 +173,342 @@ in
   };
 
   wayland.windowManager.hyprland.enable = true;
- wayland.windowManager.hyprland.configType = "hyprlang";
-  wayland.windowManager.hyprland.extraConfig = ''
-    bind=$mod,escape,submap,(p)oweroff, (s)uspend, (h)ibernate, (r)eboot, (l)ogout
-    submap=(p)oweroff, (s)uspend, (h)ibernate, (r)eboot, (l)ogout
+  # Hyprland 0.56 dropped hyprlang entirely; hyprland.conf is no longer read.
+  wayland.windowManager.hyprland.configType = "lua";
 
-    bind=,p,exec,systemctl poweroff
-    bind=,p,submap,reset
-
-    bind=,s,exec,systemctl suspend-then-hibernate
-    bind=,s,submap,reset
-
-    bind=,h,exec,systemctl hibernate
-    bind=,h,submap,reset
-
-    bind=,r,exec,systemctl reboot
-    bind=,r,submap,reset
-
-    bind=,l,exit
-    bind=,l,submap,reset
-
-    bind=,escape,submap,reset
-    bind=,return,submap,reset
-    submap=reset
-
-    ${
-      if enableVNC then
-        ""
-      else
-        ''
-          workspace=1,monitor:DP-3,default:true
-          workspace=3,monitor:DP-3
-          workspace=5,monitor:DP-3
-
-          workspace=7,monitor:DP-5,default:true,layoutopt:orientation:top
-          workspace=9,monitor:DP-5,layoutopt:orientation:bottom
-
-          workspace=2,monitor:DP-4,default:true,layoutopt:orientation:bottom
-          workspace=4,monitor:DP-4,layoutopt:orientation:top
-        ''
-    }
-  '';
+  # The submap name is what waybar's hyprland/submap module renders, so it
+  # doubles as the on-screen key hint. Keep it verbatim.
+  wayland.windowManager.hyprland.submaps.${powerSubmap} = {
+    settings.bind = [
+      {
+        _args = [
+          "P"
+          (mkLuaInline (exec "systemctl poweroff"))
+        ];
+      }
+      {
+        _args = [
+          "S"
+          (mkLuaInline (exec "systemctl suspend-then-hibernate"))
+        ];
+      }
+      {
+        _args = [
+          "H"
+          (mkLuaInline (exec "systemctl hibernate"))
+        ];
+      }
+      {
+        _args = [
+          "R"
+          (mkLuaInline (exec "systemctl reboot"))
+        ];
+      }
+      {
+        _args = [
+          "L"
+          (mkLuaInline "hl.dsp.exit()")
+        ];
+      }
+      {
+        _args = [
+          "escape"
+          (mkLuaInline ''hl.dsp.submap("reset")'')
+        ];
+      }
+      {
+        _args = [
+          "Return"
+          (mkLuaInline ''hl.dsp.submap("reset")'')
+        ];
+      }
+    ];
+  };
 
   wayland.windowManager.hyprland.settings = {
+    mod = {
+      _var = modKey;
+    };
+
     monitor =
       if enableVNC then
         [
-          ", 1920x1080@60, 0x0, 1"
+          {
+            output = "";
+            mode = "1920x1080@60";
+            position = "0x0";
+            scale = "1";
+          }
         ]
       else
         [
-          "DP-3, preferred, 0x0, 1.333333"
-          "DP-4, preferred, -1440x0, 1, transform, 1"
-          #"DP-4, disable"
-          "DP-5, preferred, 2880x0, 1, transform, 3"
-          #"DP-5, disable"
+          {
+            output = "DP-3";
+            mode = "preferred";
+            position = "0x0";
+            scale = "1.333333";
+          }
+          {
+            output = "DP-4";
+            mode = "preferred";
+            position = "-1440x0";
+            scale = "1";
+            transform = 1;
+          }
+          {
+            output = "DP-5";
+            mode = "preferred";
+            position = "2880x0";
+            scale = "1";
+            transform = 3;
+          }
         ];
-    "$mod" = "${modKey}";
+
+    workspace_rule = lib.optionals (!enableVNC) [
+      {
+        workspace = "1";
+        monitor = "DP-3";
+        default = true;
+      }
+      {
+        workspace = "3";
+        monitor = "DP-3";
+      }
+      {
+        workspace = "5";
+        monitor = "DP-3";
+      }
+      {
+        workspace = "7";
+        monitor = "DP-5";
+        default = true;
+        layout_opts.orientation = "top";
+      }
+      {
+        workspace = "9";
+        monitor = "DP-5";
+        layout_opts.orientation = "bottom";
+      }
+      {
+        workspace = "2";
+        monitor = "DP-4";
+        default = true;
+        layout_opts.orientation = "bottom";
+      }
+      {
+        workspace = "4";
+        monitor = "DP-4";
+        layout_opts.orientation = "top";
+      }
+    ];
+
     bind = [
-      "$mod, Return, exec, ${terminal-bin}"
-      "$mod SHIFT, q, killactive"
-      "$mod, d, exec, ${pkgs.rofi}/bin/rofi -show drun"
-      "$mod SHIFT, s, exec, ${screenshot}/bin/screenshot"
-      "$mod, i, exec, hyprlock"
-      "$mod SHIFT, e, exec, ${pkgs.neovide}/bin/neovide"
-      "$mod, left, movefocus, l"
-      "$mod, right, movefocus, r"
-      "$mod, up, movefocus, u"
-      "$mod, down, movefocus, d"
-      "$mod SHIFT, left, movewindoworgroup, l"
-      "$mod SHIFT, right, movewindoworgroup, r"
-      "$mod SHIFT, up, movewindoworgroup, u"
-      "$mod SHIFT, down, movewindoworgroup, d"
-      "$mod, f, fullscreen"
-      "$mod, g, togglegroup"
-      "$mod SHIFT, g, lockactivegroup, toggle"
-      "$mod, Tab, changegroupactive, f"
-      "$mod SHIFT, Tab, changegroupactive, b"
-      "$mod, space, layoutmsg, swapwithmaster"
-      "$mod, m, movecurrentworkspacetomonitor, +1"
-      "$mod SHIFT, space, togglefloating"
+      (bind "Return" (exec terminal-bin))
+      (bind "SHIFT + Q" "hl.dsp.window.close()")
+      (bind "D" (exec "${pkgs.rofi}/bin/rofi -show drun"))
+      (bind "SHIFT + S" (exec "${screenshot}/bin/screenshot"))
+      (bind "I" (exec "hyprlock"))
+      (bind "SHIFT + E" (exec "${pkgs.neovide}/bin/neovide"))
+      (bind "escape" "hl.dsp.submap(${builtins.toJSON powerSubmap})")
+      (bind "left" ''hl.dsp.focus({ direction = "l" })'')
+      (bind "right" ''hl.dsp.focus({ direction = "r" })'')
+      (bind "up" ''hl.dsp.focus({ direction = "u" })'')
+      (bind "down" ''hl.dsp.focus({ direction = "d" })'')
+      (bind "SHIFT + left" ''hl.dsp.window.move({ direction = "l", group_aware = true })'')
+      (bind "SHIFT + right" ''hl.dsp.window.move({ direction = "r", group_aware = true })'')
+      (bind "SHIFT + up" ''hl.dsp.window.move({ direction = "u", group_aware = true })'')
+      (bind "SHIFT + down" ''hl.dsp.window.move({ direction = "d", group_aware = true })'')
+      (bind "F" "hl.dsp.window.fullscreen()")
+      (bind "G" "hl.dsp.group.toggle()")
+      (bind "SHIFT + G" ''hl.dsp.group.lock_active({ action = "toggle" })'')
+      (bind "Tab" "hl.dsp.group.next()")
+      (bind "SHIFT + Tab" "hl.dsp.group.prev()")
+      (bind "space" ''hl.dsp.layout("swapwithmaster")'')
+      (bind "M" ''hl.dsp.workspace.move({ monitor = "+1" })'')
+      (bind "SHIFT + space" ''hl.dsp.window.float({ action = "toggle" })'')
     ]
-    ++ (map (num: "$mod, ${num}, workspace, ${num}") (
-      builtins.genList (x: builtins.toString (x + 1)) 9
-    ))
-    ++ (map (num: "$mod SHIFT, ${num}, movetoworkspacesilent, ${num}") (
-      builtins.genList (x: builtins.toString (x + 1)) 9
-    ))
+    # Workspace 10 is bound to the 0 key, the rest map onto their own digit.
+    ++ (map (
+      num: bind (toString (lib.mod num 10)) "hl.dsp.focus({ workspace = ${toString num} })"
+    ) workspaceNums)
+    ++ (map (
+      num:
+      bind "SHIFT + ${toString (lib.mod num 10)}" "hl.dsp.window.move({ workspace = ${toString num}, follow = false })"
+    ) workspaceNums)
     ++ [
-      "$mod, 0, workspace, 10"
-      "$mod SHIFT, 0, movetoworkspacesilent, 10"
+      (bindBare "XF86AudioRaiseVolume"
+        (exec "${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%")
+        { repeating = true; }
+      )
+      (bindBare "XF86AudioLowerVolume"
+        (exec "${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%")
+        { repeating = true; }
+      )
+      (bindBare "XF86AudioMute" (exec "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle")
+        {
+          repeating = true;
+        }
+      )
+      (bindBare "XF86MonBrightnessUp" (exec "light -A 5") { repeating = true; })
+      (bindBare "XF86MonBrightnessDown" (exec "light -U 5") { repeating = true; })
+      (bindOpts "mouse:272" "hl.dsp.window.drag()" { mouse = true; })
+      (bindOpts "mouse:273" "hl.dsp.window.resize()" { mouse = true; })
     ];
 
-    binde = [
-      ", XF86AudioRaiseVolume, exec, ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%"
-      ", XF86AudioLowerVolume, exec, ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%"
-      ", XF86AudioMute, exec, ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle"
-      ", XF86MonBrightnessUp, exec, light -A 5"
-      ", XF86MonBrightnessDown, exec, light -U 5"
-    ];
-
-    bindm = [
-      "$mod, mouse:272, movewindow"
-      "$mod, mouse:273, resizewindow"
-    ];
-
-    xwayland = {
-      force_zero_scaling = true;
-    };
-
-    misc = {
-      disable_hyprland_logo = true;
-      disable_splash_rendering = true;
-      background_color = "0x000000";
-    };
-
-    group = {
-      groupbar = {
-        font_size = 12;
-        gradients = false;
-        "col.inactive" = "0x2E344000";
-        "col.active" = "0x5E81AC00";
+    config = {
+      xwayland = {
+        force_zero_scaling = true;
       };
-    };
 
-    binds = {
-      workspace_back_and_forth = true;
-      allow_workspace_cycles = true;
-    };
+      misc = {
+        disable_hyprland_logo = true;
+        disable_splash_rendering = true;
+        background_color = "0x000000";
+      };
 
-    animations = {
-      enabled = true;
-      animation = [
-        "workspaces,1,2,default"
-        "windows,1,1,default"
-        "fade,1,3,default"
-        "border,1,1,default"
-        "borderangle,1,1,default"
-      ];
-    };
+      group = {
+        groupbar = {
+          font_size = 12;
+          gradients = false;
+          "col.inactive" = "0x2E344000";
+          "col.active" = "0x5E81AC00";
+        };
+      };
 
-    decoration = {
-      rounding = 10;
-      blur = {
+      binds = {
+        workspace_back_and_forth = true;
+        allow_workspace_cycles = true;
+      };
+
+      animations = {
         enabled = true;
-        size = 7;
-        passes = 4;
-        xray = true;
-        ignore_opacity = false;
-        new_optimizations = true;
-        noise = 0.02;
-        contrast = 1.05;
-        brightness = 1.3;
       };
-      shadow = {
+
+      decoration = {
+        rounding = 10;
+        blur = {
+          enabled = true;
+          size = 7;
+          passes = 4;
+          xray = true;
+          ignore_opacity = false;
+          new_optimizations = true;
+          noise = 0.02;
+          contrast = 1.05;
+          brightness = 1.3;
+        };
+        shadow = {
+          enabled = true;
+          range = 20;
+          render_power = 2;
+          color = "0x99000000";
+          color_inactive = "0x55000000";
+        };
+      };
+
+      general = {
+        layout = "master";
+        border_size = 0;
+        gaps_in = 2;
+        gaps_out = 0;
+        col.active_border = "0x36393Eaa";
+      };
+
+      master = {
+        new_status = "master";
+        orientation = "right";
+        mfact = 0.7;
+      };
+
+      input = {
+        kb_layout = "us";
+        kb_options = "compose:ralt";
+
+        follow_mouse = 1;
+
+        touchpad = {
+          natural_scroll = true;
+          disable_while_typing = true;
+          # Lua normalizes registered option names, so hyphens become
+          # underscores: input:touchpad:tap-to-click -> tap_to_click.
+          tap_to_click = true;
+        };
+      };
+
+      ecosystem = {
+        no_donation_nag = true;
+        no_update_news = true;
+      };
+    };
+
+    animation = [
+      {
+        leaf = "workspaces";
         enabled = true;
-        range = 20;
-        render_power = 2;
-        color = "0x99000000";
-        color_inactive = "0x55000000";
-
-      };
-      # drop_shadow = false;
-      # shadow_range = 20;
-      # shadow_render_power = 2;
-      # shadow_offset = "3 3";
-      # "col.shadow" = "0x99000000";
-      # "col.shadow_inactive" = "0x55000000";
-      #active_opacity = 0.95;
-      #inactive_opacity = 0.85;
-      #fullscreen_opacity = 1.0;
-    };
-
-    general = {
-      layout = "master";
-      border_size = 0;
-      gaps_in = 2;
-      gaps_out = 0;
-      "col.active_border" = "0x36393Eaa";
-    };
-
-    master = {
-      new_status = "master";
-      orientation = "right";
-      mfact = 0.7;
-    };
-
-    layerrule = [
-      "match:workspace waybar, blur off"
+        speed = 2;
+        bezier = "default";
+      }
+      {
+        leaf = "windows";
+        enabled = true;
+        speed = 1;
+        bezier = "default";
+      }
+      {
+        leaf = "fade";
+        enabled = true;
+        speed = 3;
+        bezier = "default";
+      }
+      {
+        leaf = "border";
+        enabled = true;
+        speed = 1;
+        bezier = "default";
+      }
+      {
+        leaf = "borderangle";
+        enabled = true;
+        speed = 1;
+        bezier = "default";
+      }
     ];
 
-    input = {
-      kb_layout = "us";
-      #kb_variant = "colemak";
-      kb_options = "compose:ralt";
-
-      follow_mouse = 1;
-
-      touchpad = {
-        natural_scroll = true;
-        disable_while_typing = true;
-        tap-to-click = true;
-      };
-    };
-
-    ecosystem = {
-      no_donation_nag = true;
-      no_update_news = true;
-    };
-
-    windowrule = [
-      "dim_around on,match:class gitui"
-      "float on,match:class gitui"
-      "size 60% 60%,match:class gitui"
-      "center on,match:class gitui"
-      "dim_around on,match:title Open File"
-      "float on,match:title Open File"
-      "center on,match:title Open File"
+    layer_rule = [
+      {
+        name = "waybar-no-blur";
+        match.namespace = "waybar";
+        blur = false;
+      }
     ];
 
-    exec = [
-      # "${pkgs.kanshi}/bin/kanshi"
+    window_rule = [
+      {
+        name = "gitui-float";
+        match.class = "gitui";
+        dim_around = true;
+        float = true;
+        size = "60% 60%";
+        center = true;
+      }
+      {
+        name = "open-file-float";
+        match.title = "Open File";
+        dim_around = true;
+        float = true;
+        center = true;
+      }
     ];
 
-    exec-once = [
-      "${pkgs.hyprland}/bin/hyprctl setcursor ${xcursor_theme} 24"
-      "${pkgs.polkit_gnome.out}/libexec/polkit-gnome-authentication-agent-1"
-    ]
-    ++ (
-      if enableVNC then
-        [
-          "[workspace 1 silent] ${pkgs.firefox}/bin/firefox"
-          "[workspace 2 silent] ${pkgs.signal-desktop}/bin/signal-desktop"
-          "[workspace 2 silent] ${pkgs.telegram-desktop}/bin/Telegram"
-          "[workspace 2 silent] ${pkgs.vesktop}/bin/vesktop"
-        ]
-      else
-        [
-          "[workspace 2 silent] ${pkgs.firefox}/bin/firefox"
-          "[workspace 4 silent] ${pkgs.signal-desktop}/bin/signal-desktop"
-          "[workspace 4 silent] ${pkgs.telegram-desktop}/bin/Telegram"
-          "[workspace 4 silent] ${pkgs.spotify}/bin/spotify"
-          "[workspace 5 silent] ${pkgs.steam}/bin/steam"
-          "[workspace 5 silent] ${pkgs.lutris}/bin/lutris"
-          "[workspace 5 silent] ${pkgs.faugus-launcher}/bin/faugus-launcher"
-          "[workspace 7 silent] ${pkgs.vesktop}/bin/vesktop"
-        ]
-    );
+    on = [
+      {
+        _args = [
+          "hyprland.start"
+          (mkLuaInline ''
+            function()
+            ${lib.concatMapStrings (cmd: "  hl.exec_cmd(${builtins.toJSON cmd})\n") startupCommands}end'')
+        ];
+      }
+    ];
   };
 }
