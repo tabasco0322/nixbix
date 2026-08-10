@@ -172,7 +172,7 @@ in
   environment.systemPackages = [
     pkgs.nordic
     pkgs.nordzy-cursor-theme
-    pkgs.arc-icon-theme
+    pkgs.nordzy-icon-theme
   ];
 
   programs.regreet.settings = {

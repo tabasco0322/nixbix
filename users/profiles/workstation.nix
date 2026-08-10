@@ -80,6 +80,8 @@ in
 
   home.sessionVariables.XCURSOR_THEME = gtk.cursorTheme.name;
 
+  dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+
   gtk = {
     enable = true;
     font = {
@@ -91,13 +93,15 @@ in
       name = "Nordzy-cursors";
     };
     iconTheme = {
-      package = pkgs.arc-icon-theme;
+      package = pkgs.nordzy-icon-theme;
       name = "Nordzy-dark";
     };
     theme = {
       package = pkgs.nordic;
       name = "Nordic-darker";
     };
+    gtk3.extraConfig.gtk-application-prefer-dark-theme = true;
+    gtk4.extraConfig.gtk-application-prefer-dark-theme = true;
     gtk4.theme = null;
   };
 }

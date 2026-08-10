@@ -94,7 +94,6 @@ in
     MOZ_USE_XINPUT2 = "1";
     XCURSOR_THEME = xcursor_theme;
     XCURSOR_SIZE = "24";
-    QT_STYLE_OVERRIDE = lib.mkForce "gtk";
     _JAVA_AWT_WM_NONREPARENTING = "1";
     NIXOS_OZONE_WL = "1";
   };
