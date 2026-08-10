@@ -70,6 +70,12 @@ in
     run install -D -m0644 /dev/null "${config.home.homeDirectory}/.config/DankMaterialShell/.firstlaunch"
   '';
 
+  # DMS rewrites both of these at runtime and their directories are persisted, so
+  # the mutated copies survive the boot wipe. Without force, checkLinkTargets
+  # aborts the entire activation rather than just these two files.
+  xdg.configFile."DankMaterialShell/settings.json".force = true;
+  xdg.stateFile."DankMaterialShell/session.json".force = true;
+
   programs.dank-material-shell = {
     enable = true;
     package = dmsPackage;

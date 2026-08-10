@@ -103,6 +103,9 @@ in
   wayland.windowManager.hyprland.enable = true;
   # Hyprland 0.56 dropped hyprlang entirely; hyprland.conf is no longer read.
   wayland.windowManager.hyprland.configType = "lua";
+  # DMS's setup wizard writes a real hyprland.lua if it ever runs; without force
+  # that one file would abort the whole activation instead of being replaced.
+  xdg.configFile."hypr/hyprland.lua".force = true;
 
   wayland.windowManager.hyprland.settings = {
     mod = {
