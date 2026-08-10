@@ -1,5 +1,7 @@
 {
   adminUser,
+  config,
+  inputs,
   pkgs,
   lib,
   hostName,
@@ -121,6 +123,40 @@ let
     '';
   };
 
+  # Derived from the user's wayvnc settings so the greeter and the post-login
+  # session can never disagree on port or keyboard layout.
+  wayvncConfig = pkgs.writeText "wayvnc-greeter.conf" (
+    lib.concatStringsSep "\n" (
+      lib.mapAttrsToList (
+        key: value: "${key}=${toString value}"
+      ) config.home-manager.users.${adminUser.name}.services.wayvnc.settings
+    )
+  );
+
+  # Runs inside the greeter's Hyprland. hl.exec_cmd is fire-and-forget, so poll
+  # for the output rather than assuming it exists by the time wayvnc starts.
+  greeterVNC = pkgs.writeShellApplication {
+    name = "greeter-vnc";
+    runtimeInputs = [
+      pkgs.hyprland
+      pkgs.wayvnc
+      pkgs.jq
+      pkgs.coreutils
+    ];
+    text = ''
+      hyprctl output create headless
+
+      for _i in $(seq 1 30); do
+        if hyprctl -j monitors | jq -e 'length > 0' >/dev/null 2>&1; then
+          break
+        fi
+        sleep 0.5
+      done
+
+      exec wayvnc --config=${wayvncConfig} --max-fps=60 --gpu
+    '';
+  };
+
   desktopSession =
     name: command:
     pkgs.writeText "${name}.desktop" ''
@@ -130,87 +166,84 @@ let
       Exec=${command}
     '';
 
-  sessions = [
-    {
-      name = "Hyprland.desktop";
-      path = desktopSession "Hyprland" "${runHyprland}/bin/Hyprland";
-    }
-    {
-      name = "nushell.desktop";
-      path = desktopSession "nushell" "${pkgs.nushell}/bin/nu";
-    }
-    {
-      name = "bash.desktop";
-      path = desktopSession "bash" "${pkgs.bashInteractive}/bin/bash";
-    }
-  ];
-
-  createGreeter =
-    default: sessions:
-    let
-      sessionDir = pkgs.linkFarm "sessions" (
-        builtins.filter (item: item.name != "${default}.desktop") sessions
-      );
-    in
-    pkgs.writeShellApplication {
-      name = "greeter";
-      runtimeInputs = [
-        runHyprland
-        pkgs.bashInteractive
-        pkgs.nushell
-        pkgs.systemd
-        pkgs.tuigreet
-      ];
-      text = ''
-        tuigreet --sessions ${sessionDir} --time -r --remember-session --power-shutdown 'systemctl poweroff' --power-reboot 'systemctl reboot' --cmd ${default}
+  # dms-greeter resolves autologin by reading Exec= out of the chosen session's
+  # desktop file, so HyprlandVNC has to exist as a session of its own.
+  sessions =
+    pkgs.runCommand "nixbix-wayland-sessions"
+      {
+        passthru.providedSessions = [
+          "Hyprland"
+          "HyprlandVNC"
+          "nushell"
+          "bash"
+        ];
+      }
+      ''
+        mkdir -p "$out/share/wayland-sessions"
+        ln -s ${desktopSession "Hyprland" "${runHyprland}/bin/Hyprland"} "$out/share/wayland-sessions/Hyprland.desktop"
+        ln -s ${desktopSession "HyprlandVNC" "${runHyprlandVNC}/bin/HyprlandVNC"} "$out/share/wayland-sessions/HyprlandVNC.desktop"
+        ln -s ${desktopSession "nushell" "${pkgs.nushell}/bin/nu"} "$out/share/wayland-sessions/nushell.desktop"
+        ln -s ${desktopSession "bash" "${pkgs.bashInteractive}/bin/bash"} "$out/share/wayland-sessions/bash.desktop"
       '';
-    };
+
+  defaultSession = if enableVNC then "HyprlandVNC" else "Hyprland";
+  greeterCacheDir = "/var/lib/dms-greeter";
 in
 {
-  programs.regreet.enable = true;
+  imports = [ inputs.dank-greeter.nixosModules.default ];
 
-  environment.systemPackages = [
-    pkgs.nordic
-    pkgs.nordzy-cursor-theme
-    pkgs.nordzy-icon-theme
-  ];
-
-  programs.regreet.settings = {
-    commands = {
-      reboot = [
-        "systemctl"
-        "reboot"
-      ];
-      poweroff = [
-        "systemctl"
-        "poweroff"
-      ];
-    };
-    appearance = {
-      greeting_msg = "Welcome back!";
-    };
-    GTK = {
-      cursor_theme_name = lib.mkForce "Nordzy-cursors";
-      font_name = lib.mkForce "Roboto Medium 14";
-      icon_theme_name = lib.mkForce "Nordzy-dark";
-      theme_name = lib.mkForce "Nordic-darker";
-      application_prefer_dark_theme = lib.mkForce true;
-    };
-  };
-
-  services.greetd = {
+  programs.dms-greeter = {
     enable = true;
-    restart = true;
-    settings = {
-      initial_session = lib.mkIf enableVNC {
-        user = "${adminUser.name}";
-        command = "${runHyprlandVNC}/bin/HyprlandVNC";
-      };
-      default_session.command = "${createGreeter "${runHyprland}/bin/Hyprland" sessions}/bin/greeter";
-    };
+    package = inputs.dank-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    compositor.name = "hyprland";
+    configHome = "/home/${adminUser.name}";
+    # Headless hosts have no output of their own, so give the greeter the same
+    # virtual 1920x1080 the session gets and serve it over VNC.
+    compositor.customConfig = lib.optionalString enableVNC ''
+      hl.monitor({ ["output"] = "", ["mode"] = "1920x1080@60", ["position"] = "0x0", ["scale"] = "1" })
+
+      hl.on("hyprland.start", function()
+        hl.exec_cmd("${greeterVNC}/bin/greeter-vnc")
+      end)
+    '';
   };
-  systemd.services.greetd.serviceConfig = {
-    ExecStartPre = "${pkgs.util-linux}/bin/kill -SIGRTMIN+21 1";
-    ExecStopPost = "${pkgs.util-linux}/bin/kill -SIGRTMIN+20 1";
+
+  services.displayManager = {
+    inherit defaultSession;
+    sessionPackages = [ sessions ];
+  };
+
+  services.greetd.restart = true;
+
+  systemd.services.greetd = {
+    # dms-greeter only looks for sessions under XDG_DATA_DIRS (and /usr/share);
+    # without this it finds none and falls back to running the compositor
+    # straight off its PATH, skipping the session wrappers entirely.
+    environment.XDG_DATA_DIRS = "${config.services.displayManager.sessionData.desktops}/share:/run/current-system/sw/share";
+
+    # The remembered session wins over any default, so pin it rather than
+    # trusting whatever a previous fallback launch left behind.
+    preStart = lib.mkAfter ''
+      memory_dir=${greeterCacheDir}/.local/state
+      memory_file="$memory_dir/memory.json"
+      memory_tmp="$memory_dir/memory.json.tmp"
+
+      install -d -m 0750 -o greeter -g greeter "$memory_dir"
+      if [ -f "$memory_file" ]; then
+        ${lib.getExe pkgs.jq} --arg session ${lib.escapeShellArg "${defaultSession}.desktop"} \
+          '.lastSessionDesktopId = $session | del(.lastSessionId, .lastSessionExec)' \
+          "$memory_file" > "$memory_tmp"
+      else
+        ${lib.getExe pkgs.jq} -n --arg session ${lib.escapeShellArg "${defaultSession}.desktop"} \
+          '{ lastSessionDesktopId: $session }' > "$memory_tmp"
+      fi
+      install -m 0640 -o greeter -g greeter "$memory_tmp" "$memory_file"
+      rm -f "$memory_tmp"
+    '';
+
+    serviceConfig = {
+      ExecStartPre = "${pkgs.util-linux}/bin/kill -SIGRTMIN+21 1";
+      ExecStopPost = "${pkgs.util-linux}/bin/kill -SIGRTMIN+20 1";
+    };
   };
 }

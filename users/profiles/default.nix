@@ -6,7 +6,6 @@
   imports = [
     ./alacritty.nix
     ./bat.nix
-    ./dunst.nix
     ./firefox.nix
     ./lazyvim.nix
     ./git.nix

@@ -9,5 +9,6 @@
   home-manager.sharedModules = [
     ../users/modules/theme.nix
     ../users/modules/userinfo.nix
+    inputs.dms.homeModules.dank-material-shell
   ];
 }
