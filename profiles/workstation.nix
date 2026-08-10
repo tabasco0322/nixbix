@@ -120,25 +120,24 @@ in
 
   xdg.portal = {
     enable = true;
-    wlr.enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-    config =
-      let
-        wlrConf = {
-          default = [
-            "wlr"
-            "gtk"
-          ];
-          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
-        };
-      in
-      {
-        common = {
-          default = [ "gtk" ];
-          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
-        };
-        sway = wlrConf;
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+      pkgs.xdg-desktop-portal-hyprland
+    ];
+    # Keyed off XDG_CURRENT_DESKTOP lowercased, so this must say hyprland.
+    config = {
+      common = {
+        default = [ "gtk" ];
+        "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
       };
+      hyprland = {
+        default = [
+          "hyprland"
+          "gtk"
+        ];
+        "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+      };
+    };
   };
 
   fonts.packages = with pkgs; [
