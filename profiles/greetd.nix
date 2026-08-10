@@ -187,6 +187,7 @@ let
       '';
 
   defaultSession = if enableVNC then "HyprlandVNC" else "Hyprland";
+  greeterCacheDir = "/var/lib/dms-greeter";
 in
 {
   imports = [ inputs.dank-greeter.nixosModules.default ];
@@ -214,8 +215,35 @@ in
 
   services.greetd.restart = true;
 
-  systemd.services.greetd.serviceConfig = {
-    ExecStartPre = "${pkgs.util-linux}/bin/kill -SIGRTMIN+21 1";
-    ExecStopPost = "${pkgs.util-linux}/bin/kill -SIGRTMIN+20 1";
+  systemd.services.greetd = {
+    # dms-greeter only looks for sessions under XDG_DATA_DIRS (and /usr/share);
+    # without this it finds none and falls back to running the compositor
+    # straight off its PATH, skipping the session wrappers entirely.
+    environment.XDG_DATA_DIRS = "${config.services.displayManager.sessionData.desktops}/share:/run/current-system/sw/share";
+
+    # The remembered session wins over any default, so pin it rather than
+    # trusting whatever a previous fallback launch left behind.
+    preStart = lib.mkAfter ''
+      memory_dir=${greeterCacheDir}/.local/state
+      memory_file="$memory_dir/memory.json"
+      memory_tmp="$memory_dir/memory.json.tmp"
+
+      install -d -m 0750 -o greeter -g greeter "$memory_dir"
+      if [ -f "$memory_file" ]; then
+        ${lib.getExe pkgs.jq} --arg session ${lib.escapeShellArg "${defaultSession}.desktop"} \
+          '.lastSessionDesktopId = $session | del(.lastSessionId, .lastSessionExec)' \
+          "$memory_file" > "$memory_tmp"
+      else
+        ${lib.getExe pkgs.jq} -n --arg session ${lib.escapeShellArg "${defaultSession}.desktop"} \
+          '{ lastSessionDesktopId: $session }' > "$memory_tmp"
+      fi
+      install -m 0640 -o greeter -g greeter "$memory_tmp" "$memory_file"
+      rm -f "$memory_tmp"
+    '';
+
+    serviceConfig = {
+      ExecStartPre = "${pkgs.util-linux}/bin/kill -SIGRTMIN+21 1";
+      ExecStopPost = "${pkgs.util-linux}/bin/kill -SIGRTMIN+20 1";
+    };
   };
 }
