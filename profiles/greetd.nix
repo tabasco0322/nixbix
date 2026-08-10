@@ -1,5 +1,6 @@
 {
   adminUser,
+  config,
   inputs,
   pkgs,
   lib,
@@ -122,6 +123,40 @@ let
     '';
   };
 
+  # Derived from the user's wayvnc settings so the greeter and the post-login
+  # session can never disagree on port or keyboard layout.
+  wayvncConfig = pkgs.writeText "wayvnc-greeter.conf" (
+    lib.concatStringsSep "\n" (
+      lib.mapAttrsToList (
+        key: value: "${key}=${toString value}"
+      ) config.home-manager.users.${adminUser.name}.services.wayvnc.settings
+    )
+  );
+
+  # Runs inside the greeter's Hyprland. hl.exec_cmd is fire-and-forget, so poll
+  # for the output rather than assuming it exists by the time wayvnc starts.
+  greeterVNC = pkgs.writeShellApplication {
+    name = "greeter-vnc";
+    runtimeInputs = [
+      pkgs.hyprland
+      pkgs.wayvnc
+      pkgs.jq
+      pkgs.coreutils
+    ];
+    text = ''
+      hyprctl output create headless
+
+      for _i in $(seq 1 30); do
+        if hyprctl -j monitors | jq -e 'length > 0' >/dev/null 2>&1; then
+          break
+        fi
+        sleep 0.5
+      done
+
+      exec wayvnc --config=${wayvncConfig} --max-fps=60 --gpu
+    '';
+  };
+
   desktopSession =
     name: command:
     pkgs.writeText "${name}.desktop" ''
@@ -161,15 +196,20 @@ in
     package = inputs.dank-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default;
     compositor.name = "hyprland";
     configHome = "/home/${adminUser.name}";
+    # Headless hosts have no output of their own, so give the greeter the same
+    # virtual 1920x1080 the session gets and serve it over VNC.
+    compositor.customConfig = lib.optionalString enableVNC ''
+      hl.monitor({ ["output"] = "", ["mode"] = "1920x1080@60", ["position"] = "0x0", ["scale"] = "1" })
+
+      hl.on("hyprland.start", function()
+        hl.exec_cmd("${greeterVNC}/bin/greeter-vnc")
+      end)
+    '';
   };
 
   services.displayManager = {
     inherit defaultSession;
     sessionPackages = [ sessions ];
-    autoLogin = lib.mkIf enableVNC {
-      enable = true;
-      user = adminUser.name;
-    };
   };
 
   services.greetd.restart = true;
