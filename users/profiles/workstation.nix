@@ -25,19 +25,16 @@ in
 
   home.packages = with pkgs; [
     nautilus
-    nordic
     scrot
     signal-desktop
     spotify
     telegram-desktop
     vulkan-loader
     wl-clipboard
-    wl-clipboard-x11
     xdg-utils
     vesktop
     nixfmt
     libsecret
-    lmstudio
   ];
 
   xdg.configFile."mimeapps.list".force = true;
