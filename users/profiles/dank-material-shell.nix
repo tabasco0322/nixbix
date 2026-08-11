@@ -93,7 +93,7 @@ in
       useAutoLocation = true;
       weatherEnabled = true;
       cornerRadius = 0;
-      popupTransparency = 0.65;
+      popupTransparency = 1.0;
       barElevationEnabled = false;
       m3ElevationEnabled = false;
       notificationCompactMode = true;
