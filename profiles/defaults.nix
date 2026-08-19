@@ -82,7 +82,10 @@ in
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # Pinned to 7.1: kernel 7.2 breaks Cilium's BPF probing (bpf_set_retval /
+  # FnSetRetval verifier rejection) - see https://github.com/cilium/cilium/issues/48016.
+  # Revert to pkgs.linuxPackages_latest once Cilium ships a fix.
+  boot.kernelPackages = pkgs.linuxPackages_7_1;
   boot.initrd.availableKernelModules = [
     "xhci_pci"
     "nvme"
