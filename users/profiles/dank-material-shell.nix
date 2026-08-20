@@ -9,7 +9,10 @@ let
   dmsPackage = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   # Static palette rather than matugen: the GTK/Qt side is pinned to
-  # Nordic-darker/Nordzy, so dynamic theming would drift away from it.
+  # Nordic-darker/Nordzy, so dynamic theming would drift away from it. The dark
+  # surface ramp is pushed well below Nordic-darker on purpose, to sit closer to
+  # Hyprland's black background_color; the accents and text stay Nord so GTK
+  # windows still read as part of the same theme.
   nordTheme = pkgs.writeText "dms-nord.json" (
     builtins.toJSON {
       dark = {
@@ -18,19 +21,19 @@ let
         primaryText = "#2e3440";
         primaryContainer = "#5e81ac";
         secondary = "#81a1c1";
-        surface = "#2e3440";
+        surface = "#14171d";
         surfaceText = "#eceff4";
-        surfaceVariant = "#3b4252";
+        surfaceVariant = "#1c2028";
         surfaceVariantText = "#d8dee9";
         surfaceTint = "#88c0d0";
-        background = "#2e3440";
+        background = "#14171d";
         backgroundText = "#eceff4";
         outline = "#4c566a";
-        surfaceContainerLowest = "#242933";
-        surfaceContainerLow = "#2e3440";
-        surfaceContainer = "#3b4252";
-        surfaceContainerHigh = "#434c5e";
-        surfaceContainerHighest = "#4c566a";
+        surfaceContainerLowest = "#0b0d11";
+        surfaceContainerLow = "#14171d";
+        surfaceContainer = "#1c2028";
+        surfaceContainerHigh = "#242933";
+        surfaceContainerHighest = "#2e3440";
         error = "#bf616a";
         warning = "#ebcb8b";
         info = "#88c0d0";
