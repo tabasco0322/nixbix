@@ -29,13 +29,20 @@ in
 
     nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
 
-    gc = {
-      automatic = true;
-      dates = "daily";
-      options = "--delete-older-than 7d";
-    };
+    optimise.automatic = true;
 
     package = pkgs.nix;
+  };
+
+  # Garbage collection is handled by nh clean, not nix.gc.automatic; enabling
+  # both conflicts. --no-direnv keeps nh from wiping nix-direnv gcroots.
+  programs.nh = {
+    enable = true;
+    clean = {
+      enable = true;
+      dates = "daily";
+      extraArgs = "--keep 5 --keep-since 7d --no-direnv";
+    };
   };
 
   environment.systemPackages = [

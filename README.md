@@ -53,10 +53,19 @@
     ```
 
 ### Test build
-* ```nixos-rebuild build --flake .#$hostname ```
+* ```nh os build```
+    * *`NH_FLAKE` is preset on workstations, so the flake path can be omitted.
+      Otherwise: `nh os build /path/to/nixbix -H $hostname`*
 
 ### Switch to build
-* ```nixos-rebuild switch --flake .#$hostname --sudo```
+* ```nh os switch --ask```
+    * *Shows a diff of what changed and asks before activating. `nh` elevates
+      itself, so no `sudo` is needed.*
+
+### Garbage collection
+* ```nh clean all --no-direnv```
+    * *Runs daily via the `nh-clean` timer; this is only for on-demand cleanup.
+      `--no-direnv` preserves nix-direnv gcroots.*
 
 ### Build on Mac
 
