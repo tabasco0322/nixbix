@@ -75,6 +75,10 @@ in
 
   programs.ssh.startAgent = true;
 
+  # Local checkout, so a bare `nh os switch` picks up uncommitted changes.
+  # Only workstations have one; servers are deployed to remotely.
+  programs.nh.flake = "/home/${adminUser.name}/git/nixbix";
+
   programs.gamemode.enable = true;
 
   services.pcscd.enable = true;

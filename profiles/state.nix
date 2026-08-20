@@ -86,6 +86,7 @@
         ".local/share/zoxide"
         ".local/state/DankMaterialShell"
         ".local/state/pipewire/media-session.d"
+        ".local/state/nh"
         ".local/state/opencode"
         ".local/state/wireplumber"
         ".mail"
