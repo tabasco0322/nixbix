@@ -40,6 +40,7 @@
         ".cache/zellij"
         ".cargo"
         ".claude"
+        ".config/BambuStudio"
         ".config/DankMaterialShell"
         ".config/LM Studio"
         ".config/Signal"

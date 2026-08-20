@@ -15,6 +15,7 @@ in
     ./default.nix
   ]
   ++ [
+    ./bambu-studio.nix
     ./dank-material-shell.nix
     ./faugus.nix
     ./hyprland.nix
