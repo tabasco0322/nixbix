@@ -33,12 +33,6 @@ in
   hardware.bluetooth.enable = true;
   networking.wireless.iwd.enable = true;
 
-  # Bambu Studio LAN-mode printer discovery (SSDP).
-  networking.firewall.allowedUDPPorts = [
-    1990
-    2021
-  ];
-
   environment.pathsToLink = [ "/etc/gconf" ];
 
   security.pam.services.gdm.enableGnomeKeyring = true; # load gnome-keyring at startup
