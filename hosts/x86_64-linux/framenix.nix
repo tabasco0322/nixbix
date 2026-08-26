@@ -75,12 +75,25 @@
     ];
   };
 
+  # Bambu Studio LAN-mode printer discovery (SSDP).
+  networking.firewall.allowedUDPPorts = [
+    1990
+    2021
+  ];
+
+  environment.persistence."/keep".users.${adminUser.name}.directories = [
+    ".config/BambuStudio"
+  ];
+
   programs.steam.enable = true;
   services.flatpak.enable = true;
 
   home-manager = {
     users.${adminUser.name} = {
-      imports = [ ../../users/profiles/workstation.nix ];
+      imports = [
+        ../../users/profiles/workstation.nix
+        ../../users/profiles/bambu-studio.nix
+      ];
       #      programs.git.extraConfig.user.signingKey = "key::sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIH8FItRsdPvpg8mTCF7gsKQJ4ABaOCE8a6PzamumRWe3AAAABHNzaDo=";
       #      programs.jujutsu.settings.signing = {
       #        sign-all = true;
