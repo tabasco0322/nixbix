@@ -13,6 +13,11 @@ let
     ;
   inherit (lib.generators) mkLuaInline;
 
+  # Matched by EDID serial; DP-N numbering shifts with GPU probe order.
+  monitorCenter = "desc:LG Electronics LG ULTRAGEAR+ 410NTCZAC379";
+  monitorLeft = "desc:LG Electronics 27GL850 007NTMX2V435";
+  monitorRight = "desc:LG Electronics 27GL850 007NTXR2V442";
+
   screenshot = pkgs.writeShellApplication {
     name = "screenshot";
     runtimeInputs = [ pkgs.hyprshot ];
@@ -125,20 +130,20 @@ in
       else
         [
           {
-            output = "DP-3";
+            output = monitorCenter;
             mode = "preferred";
             position = "0x0";
             scale = "1.333333";
           }
           {
-            output = "DP-4";
+            output = monitorLeft;
             mode = "preferred";
             position = "-1440x0";
             scale = "1";
             transform = 1;
           }
           {
-            output = "DP-5";
+            output = monitorRight;
             mode = "preferred";
             position = "2880x0";
             scale = "1";
@@ -149,37 +154,37 @@ in
     workspace_rule = lib.optionals (!enableVNC) [
       {
         workspace = "1";
-        monitor = "DP-3";
+        monitor = monitorCenter;
         default = true;
       }
       {
         workspace = "3";
-        monitor = "DP-3";
+        monitor = monitorCenter;
       }
       {
         workspace = "5";
-        monitor = "DP-3";
+        monitor = monitorCenter;
       }
       {
         workspace = "7";
-        monitor = "DP-5";
+        monitor = monitorRight;
         default = true;
         layout_opts.orientation = "top";
       }
       {
         workspace = "9";
-        monitor = "DP-5";
+        monitor = monitorRight;
         layout_opts.orientation = "bottom";
       }
       {
         workspace = "2";
-        monitor = "DP-4";
+        monitor = monitorLeft;
         default = true;
         layout_opts.orientation = "bottom";
       }
       {
         workspace = "4";
-        monitor = "DP-4";
+        monitor = monitorLeft;
         layout_opts.orientation = "top";
       }
     ];
