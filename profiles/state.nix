@@ -73,6 +73,7 @@
         ".local/share/atuin"
         ".local/share/containers"
         ".local/share/direnv"
+        ".local/share/faugus-launcher"
         ".local/share/fish"
         ".local/share/flatpak"
         ".local/share/lutris"
