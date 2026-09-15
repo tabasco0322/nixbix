@@ -86,7 +86,7 @@ in
   services.fwupd.enable = true;
 
   services.dbus.packages = with pkgs; [
-    gcr
+    gcr_3
     dconf
     sushi
   ];
