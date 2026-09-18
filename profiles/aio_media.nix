@@ -177,6 +177,28 @@ in
     group = "media";
   };
 
+  services.unpackerr = {
+    enable = true;
+    user = "media";
+    group = "media";
+    settings = {
+      sonarr = [
+        {
+          url = "http://127.0.0.1:8989";
+          api_key = "filepath:/run/agenix/sonarr-api-key";
+          paths = [ "/mnt/media/qb/downloads" ];
+        }
+      ];
+      radarr = [
+        {
+          url = "http://127.0.0.1:7878";
+          api_key = "filepath:/run/agenix/radarr-api-key";
+          paths = [ "/mnt/media/qb/downloads" ];
+        }
+      ];
+    };
+  };
+
   services.prowlarr = {
     enable = true;
   };
@@ -252,6 +274,10 @@ in
     };
 
     sonarr = {
+      after = [ "mnt-media.mount" ];
+    };
+
+    unpackerr = {
       after = [ "mnt-media.mount" ];
     };
 
