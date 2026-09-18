@@ -113,6 +113,14 @@
     qb-webui-password = {
       file = ../../secrets/${hostName}/qb-webui-password.age;
     };
+    sonarr-api-key = {
+      file = ../../secrets/${hostName}/sonarr-api-key.age;
+      owner = "media";
+    };
+    radarr-api-key = {
+      file = ../../secrets/${hostName}/radarr-api-key.age;
+      owner = "media";
+    };
     ts = {
       file = ../../secrets/ts.age;
       owner = "1100";
