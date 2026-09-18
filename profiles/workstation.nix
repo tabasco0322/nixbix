@@ -32,6 +32,8 @@ in
   security.rtkit.enable = true;
   hardware.bluetooth.enable = true;
   networking.wireless.iwd.enable = true;
+  networking.networkmanager.enable = true;
+  networking.networkmanager.wifi.backend = "iwd";
 
   environment.pathsToLink = [ "/etc/gconf" ];
 
