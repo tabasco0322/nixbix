@@ -1,5 +1,7 @@
 {
+  config,
   hostName,
+  lib,
   pkgs,
   ...
 }:
@@ -17,6 +19,11 @@
       "lxc+"
     ];
   };
+
+  networking.networkmanager.unmanaged = lib.mkIf config.networking.networkmanager.enable [
+    "interface-name:cilium_*"
+    "interface-name:lxc*"
+  ];
 
   systemd.services.metadata =
     let
