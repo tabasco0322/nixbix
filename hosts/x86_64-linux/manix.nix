@@ -51,6 +51,8 @@
   ];
 
   services.write-iwd-secrets.enable = true;
+  networking.networkmanager.enable = true;
+  networking.networkmanager.wifi.backend = "iwd";
 
   programs.steam.enable = true;
   services.flatpak.enable = true;
