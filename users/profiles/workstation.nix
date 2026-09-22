@@ -18,7 +18,6 @@ in
     ./dank-material-shell.nix
     ./faugus.nix
     ./hyprland.nix
-    ./lutris.nix
     ./gnome-keyring.nix
   ]
   ++ (if enableVNC then [ ./vnc.nix ] else [ ]);
