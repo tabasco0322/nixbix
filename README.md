@@ -5,7 +5,7 @@
 * [Initial Setup](#initial-setup)
 * [Nix misc](#nix-misc)
     + [Update system](#update-system)
-* [Wow things](#wow-things)
+* [Wowup](#wowup)
 * [Discord things](#discord-things)
 
 ## Initial setup
@@ -94,31 +94,13 @@ https://github.com/DeterminateSystems/nix-installer
     rm rootdisk.img
     ```
 
-## Wow things
-
-1) ```flatpak --user remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo```
-    * *Might need to reboot so things gets added to $PATH*
-1) ```flatpak install flathub com.usebottles.bottles```
-    1) Usual Wizard crap
-    1) Create New called Games with profile Gaming
-    1) Hamburger > Preferences > General > Dark Mode
-1) Click Games, *Might need to switch to Bottles*
-    1) Install Programs
-    1) Blizzard Battle.net
-    1) Probably bugs out after installation, need to add better runner
-    1) Wait for Social buttons to appear
-1) Hamburger menu > Preferences > Runners > Proton GE version $
-    1) Runner is set on application level
-1) ```flatpak update``` To update flatpak, duh
-1) Addons location ```/home/nemko/.var/app/com.usebottles.bottles/data/bottles/bottles/Games/drive_c/Program Files (x86)/World of Warcraft/_classic_era_``` 
-
-### Wowup
+## Wowup
 
 1) Visit https://wowup.io
     * Download latest appimage
 1) ```nix shell nixpkgs#appimage-run -c appimage-run WowUp-CF-2.$version.AppImage```
     * ```Ctrl+H``` To show hidden files
-    * ```/home/$USER/.var/app/com.usebottles.bottles/data/bottles/bottles/Games/drive_c/Program Files (x86)/World of Warcraft/_classic_era_```
+    * Point it at the ```_classic_era_``` directory of your WoW install
 
 ## Discord things
 

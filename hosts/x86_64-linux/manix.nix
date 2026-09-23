@@ -55,7 +55,6 @@
   networking.networkmanager.wifi.backend = "iwd";
 
   programs.steam.enable = true;
-  services.flatpak.enable = true;
 
   home-manager = {
     users.${adminUser.name} = {
