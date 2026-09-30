@@ -104,6 +104,6 @@ https://github.com/DeterminateSystems/nix-installer
 
 ## Discord things
 
-Since NixOS patches the discord binary, [Krisp yeetus deletus itself](https://nixos.wiki/wiki/Discord#Krisp_noise_suppression). Vesktop is used instead.
+Discord Canary is used. It no longer needs the Vesktop workaround: nixpkgs now ships the official client in an FHS/bwrap sandbox instead of patching the binary, so [Krisp](https://nixos.wiki/wiki/Discord#Krisp_noise_suppression) survives.
 
 
