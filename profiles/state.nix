@@ -36,6 +36,7 @@
         ".cache/nix-index"
         ".cache/nvim"
         ".cache/rbw"
+        ".cache/spotify/Browser"
         ".cache/zellij"
         ".cargo"
         ".claude"
