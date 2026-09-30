@@ -31,7 +31,7 @@ in
     vulkan-loader
     wl-clipboard
     xdg-utils
-    vesktop
+    discord-canary
     nixfmt
     libsecret
   ];

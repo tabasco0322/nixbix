@@ -48,6 +48,7 @@
         ".config/bruno"
         ".config/chromium"
         ".config/discord"
+        ".config/discordcanary"
         ".config/vesktop"
         ".config/easyeffects"
         ".config/faugus-launcher"

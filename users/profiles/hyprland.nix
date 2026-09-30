@@ -69,7 +69,7 @@ let
         "[workspace 1 silent] ${pkgs.firefox}/bin/firefox"
         "[workspace 2 silent] ${pkgs.signal-desktop}/bin/signal-desktop"
         "[workspace 2 silent] ${pkgs.telegram-desktop}/bin/Telegram"
-        "[workspace 2 silent] ${pkgs.vesktop}/bin/vesktop"
+        "[workspace 2 silent] ${pkgs.discord-canary}/bin/discordcanary"
       ]
     else
       [
@@ -79,7 +79,7 @@ let
         "[workspace 4 silent] ${pkgs.spotify}/bin/spotify"
         "[workspace 5 silent] ${pkgs.steam}/bin/steam"
         "[workspace 5 silent] ${pkgs.faugus-launcher}/bin/faugus-launcher"
-        "[workspace 7 silent] ${pkgs.vesktop}/bin/vesktop"
+        "[workspace 7 silent] ${pkgs.discord-canary}/bin/discordcanary"
       ];
 
   startupCommands = [
