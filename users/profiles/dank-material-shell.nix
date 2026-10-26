@@ -70,14 +70,14 @@ in
   # DMS can start while Home Manager is still linking settings.json; create the
   # completion marker first so its welcome wizard never opens during login.
   home.activation.disableDmsWelcome = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    run install -D -m0644 /dev/null "${config.home.homeDirectory}/.config/DankMaterialShell/.firstlaunch"
+    run install -D -m0644 /dev/null "${config.home.homeDirectory}/.config/dms/.firstlaunch"
   '';
 
   # DMS rewrites both of these at runtime and their directories are persisted, so
   # the mutated copies survive the boot wipe. Without force, checkLinkTargets
   # aborts the entire activation rather than just these two files.
-  xdg.configFile."DankMaterialShell/settings.json".force = true;
-  xdg.stateFile."DankMaterialShell/session.json".force = true;
+  xdg.configFile."dms/settings.json".force = true;
+  xdg.stateFile."dms/session.json".force = true;
 
   programs.dank-material-shell = {
     enable = true;

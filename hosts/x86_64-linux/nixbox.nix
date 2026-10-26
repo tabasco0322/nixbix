@@ -25,10 +25,6 @@
 
   boot.loader.systemd-boot.memtest86.enable = true;
 
-  boot.initrd = {
-    systemd.enable = true;
-  };
-
   # btrfs.disks = ["/dev/nvme0n1"];
 
   services.ratbagd.enable = true;
