@@ -29,10 +29,6 @@
 
   boot.loader.systemd-boot.memtest86.enable = true;
 
-  boot.initrd = {
-    systemd.enable = true;
-  };
-
   boot.kernelParams = [
     # Kernel params set according to https://github.com/rjmalagon/ollama-linux-amd-apu
     # https://wiki.archlinux.org/title/Framework_Desktop#Unified_memory
