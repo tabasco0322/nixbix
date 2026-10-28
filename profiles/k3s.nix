@@ -32,7 +32,7 @@
         "priority 5200 fwmark 0xf00/0xf00 lookup 52"
         "priority 5200 to 100.64.0.0/10 lookup 52"
       ];
-      forRules = cmd: lib.concatMapStringsSep "\n" (rule: cmd rule) rules;
+      forRules = cmd: lib.concatMapStringsSep "\n" cmd rules;
     in
     {
       description = "Route Cilium-marked traffic via Tailscale table";
