@@ -26,6 +26,16 @@
         overlays = [
           inputs.agenix.overlays.default
           inputs.nur.overlays.default
+          # Host 1.0.2365 rejects nix store symlinked native modules
+          (_final: _prev: {
+            inherit
+              (import inputs.nixpkgs-discord {
+                inherit system;
+                config.allowUnfree = true;
+              })
+              discord-canary
+              ;
+          })
           (_final: prev: {
             pkgsi686Linux = prev.pkgsi686Linux.extend (
               _: pp: {

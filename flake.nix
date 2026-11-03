@@ -59,6 +59,8 @@
     nixos-generators.url = "github:nix-community/nixos-generators";
     nixos-hardware.url = "github:nixos/nixos-hardware";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Last discord-canary (1.0.2180) before nixpkgs symlinked native modules
+    nixpkgs-discord.url = "github:NixOS/nixpkgs/09063bd1f2b36fd9fd793c36dfade7bd40a93dfc";
     nur.url = "github:nix-community/NUR";
     pre-commit-hooks.inputs.flake-compat.follows = "flake-compat";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
