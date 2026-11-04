@@ -146,7 +146,6 @@ in
             mode = "preferred";
             position = "2880x0";
             scale = "1";
-            transform = 3;
           }
         ];
 
@@ -168,12 +167,12 @@ in
         workspace = "7";
         monitor = monitorRight;
         default = true;
-        layout_opts.orientation = "top";
+        layout_opts.orientation = "left";
       }
       {
         workspace = "9";
         monitor = monitorRight;
-        layout_opts.orientation = "bottom";
+        layout_opts.orientation = "left";
       }
       {
         workspace = "2";
