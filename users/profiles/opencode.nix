@@ -4,8 +4,8 @@
     settings = {
       autoupdate = false;
     };
-    tui = {
-      theme = "system";
+    cli = {
+      theme.name = "system";
     };
   };
 }

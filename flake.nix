@@ -16,9 +16,7 @@
   };
 
   inputs = {
-    agenix.inputs.home-manager.follows = "nixpkgs";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
-    agenix.inputs.systems.follows = "systems";
     agenix.url = "github:ryantm/agenix";
     age-plugin-yubikey.flake = false;
     age-plugin-yubikey.url = "github:str4d/age-plugin-yubikey";
@@ -35,7 +33,6 @@
     dank-greeter.url = "github:AvengeMedia/dank-greeter";
     devenv.inputs.flake-compat.follows = "flake-compat";
     devenv.inputs.nixpkgs.follows = "nixpkgs";
-    devenv.inputs.cachix.follows = "cachix";
     devenv.url = "github:cachix/devenv";
     dms.inputs.nixpkgs.follows = "nixpkgs";
     dms.url = "github:AvengeMedia/DankMaterialShell/stable";
