@@ -161,7 +161,8 @@ in
       }
       {
         workspace = "5";
-        monitor = monitorCenter;
+        monitor = monitorRight;
+        layout_opts.orientation = "left";
       }
       {
         workspace = "7";
