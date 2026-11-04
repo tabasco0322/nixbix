@@ -206,7 +206,7 @@ in
       (bind "SHIFT + down" ''hl.dsp.window.move({ direction = "d", group_aware = true })'')
       (bind "F" "hl.dsp.window.fullscreen()")
       (bind "G" "hl.dsp.group.toggle()")
-      (bind "SHIFT + G" ''hl.dsp.group.lock_active({ action = "toggle" })'')
+      (bind "SHIFT + G" ''hl.dsp.group.lock({ action = "toggle" })'')
       (bind "Tab" "hl.dsp.group.next()")
       (bind "SHIFT + Tab" "hl.dsp.group.prev()")
       (bind "space" ''hl.dsp.layout("swapwithmaster")'')
