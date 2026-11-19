@@ -304,7 +304,10 @@ in
       description = "Forward qBittorrent WebUI from host to private netns";
       after = [ "qbittorrent.service" ];
       bindsTo = [ "qbittorrent.service" ];
-      wantedBy = [ "multi-user.target" ];
+      wantedBy = [
+        "multi-user.target"
+        "qbittorrent.service"
+      ];
       script = ''
         ${pkgs.socat}/bin/socat tcp-listen:${toString webuiPort},fork,reuseaddr exec:'${pkgs.util-linux}/bin/nsenter --net=${netnsPath} ${pkgs.socat}/bin/socat STDIO "tcp-connect:127.0.0.1:${toString webuiPort}"',nofork
       '';
@@ -320,7 +323,10 @@ in
         "wireguard-private.service"
         "qbittorrent.service"
       ];
-      wantedBy = [ "multi-user.target" ];
+      wantedBy = [
+        "multi-user.target"
+        "qbittorrent.service"
+      ];
       path = [
         pkgs.libnatpmp
         pkgs.curl
